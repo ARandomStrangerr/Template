@@ -35,5 +35,5 @@ public abstract class Chain {
         return processObject;
     }
 
-     protected abstract void chainConstruction();
+    protected abstract void chainConstruction();
 }

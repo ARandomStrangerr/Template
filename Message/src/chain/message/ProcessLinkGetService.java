@@ -12,7 +12,11 @@ public class ProcessLinkGetService extends Link {
     @Override
     protected boolean resolve() {
         JsonObject headerObj = chain.getProcessObject().get("header").getAsJsonObject();
+        if (headerObj.has("decreaseCounter") && headerObj.has("hashCode")){
 
+        } else {
+
+        }
         return false;
     }
 }
