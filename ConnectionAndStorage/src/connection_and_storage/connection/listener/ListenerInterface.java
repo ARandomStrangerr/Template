@@ -4,6 +4,7 @@ import connection_and_storage.connection.socket.SocketInterface;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public interface ListenerInterface<T extends SocketInterface> {
     /**
@@ -29,13 +30,25 @@ public interface ListenerInterface<T extends SocketInterface> {
      *
      * @param key get a socket under the key name
      * @return a socket under the key name
-     * @throws NullPointerException there is no socket associated with such name
+     * @throws NoSuchElementException there is no socket associated with such name
      */
-    SocketInterface get(String key)
-            throws NullPointerException;
+    T get(String key)
+            throws NoSuchElementException;
+
+    /**
+     * get a socket with a given name and code, this only apply for group storage
+     *
+     * @param key      the group that contain the socket
+     * @param hashCode the code identify a socket within group
+     * @return a socket of combination of its key and hash code
+     * @throws NullPointerException when the group or the key does not responsible for any element
+     */
+    T get(String key, int hashCode)
+            throws NoSuchElementException;
 
     /**
      * remove a socket from the collection
+     *
      * @param socket the socket to be removed
      */
     void remove(T socket);
