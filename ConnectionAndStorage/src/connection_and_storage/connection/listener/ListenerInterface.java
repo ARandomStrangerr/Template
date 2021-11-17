@@ -42,9 +42,11 @@ public interface ListenerInterface<T extends SocketInterface> {
      * @param hashCode the code identify a socket within group
      * @return a socket of combination of its key and hash code
      * @throws NullPointerException when the group or the key does not responsible for any element
+     * @throws IllegalAccessException this method only available for group storage
      */
     T get(String key, int hashCode)
-            throws NoSuchElementException;
+            throws NoSuchElementException,
+            IllegalAccessException;
 
     /**
      * remove a socket from the collection
