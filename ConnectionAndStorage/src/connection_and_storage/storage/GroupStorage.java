@@ -43,6 +43,12 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
         return returnSocket;
     }
 
+    /**
+     * @param key      name of the group
+     * @param hashCode unique code of the socket
+     * @return a socket associated with group name and its unique identification
+     * @throws NoSuchElementException when the key or code does not response to a socket
+     */
     @Override
     public T get(String key, int hashCode)
             throws NoSuchElementException {
