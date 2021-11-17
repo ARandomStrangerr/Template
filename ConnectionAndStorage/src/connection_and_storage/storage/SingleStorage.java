@@ -38,7 +38,7 @@ public class SingleStorage<T extends SocketInterface> implements StorageInterfac
     public T get(String key,
                  int hashCode)
             throws IllegalAccessException {
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("this method is not available for single storage structure");
     }
 
     @Override
@@ -57,12 +57,17 @@ public class SingleStorage<T extends SocketInterface> implements StorageInterfac
     public void remove(String key,
                        int hashCode)
             throws IllegalAccessException {
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("This method is not available for single storage structure");
     }
 
+    /**
+     * the universal way to remove socket within collection
+     * @param socket the socket needed to be removed
+     * @throws NoSuchElementException when the socket cannot be found in the collection
+     */
     @Override
     public void remove(T socket) throws NoSuchElementException {
-
+        remove(socket.getKey());
     }
 
     @Override
