@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.NoSuchElementException;
 
 public abstract class Listener<T extends SocketInterface> implements ListenerInterface<T> {
 
@@ -45,7 +46,7 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
         connectionStorage.put(key, socket);
     }
 
-    protected Socket acceptSocket() throws IOException{
+    protected Socket acceptSocket() throws IOException {
         return socket.accept();
     }
 
@@ -59,6 +60,22 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
     @Override
     public T get(String key) throws NullPointerException {
         return connectionStorage.get(key);
+    }
+
+    /**
+     * get a socket with a given name and code, this only apply for group storage
+     *
+     * @param key      the group that contain the socket
+     * @param hashCode the code identify a socket within group
+     * @return a socket of combination of its key and hash code
+     * @throws NullPointerException when the group or the key does not responsible for any element
+     * @throws IllegalAccessException when the storage structure is single
+     */
+    @Override
+    public T get(String key, int hashCode)
+            throws NoSuchElementException,
+            IllegalAccessException {
+        return connectionStorage.get(key, hashCode);
     }
 
     /**
@@ -78,7 +95,7 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
      */
     @Override
     public void close() throws IOException {
-        for(T socket : connectionStorage) {
+        for (T socket : connectionStorage) {
             socket.close();
         }
         socket.close();
