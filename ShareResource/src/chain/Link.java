@@ -1,9 +1,9 @@
 package chain;
 
-public abstract class Link {
-    protected final Chain chain;
+public abstract class Link<T extends Chain> {
+    protected final T chain;
 
-    public Link(Chain chain) {
+    public Link(T chain) {
         this.chain = chain;
     }
 

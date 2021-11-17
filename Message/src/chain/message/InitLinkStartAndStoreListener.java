@@ -1,29 +1,22 @@
 package chain.message;
 
-import chain.Chain;
 import chain.Link;
-import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.listener.PlainListener;
-import connection_and_storage.connection.socket.PlainSocket;
 import connection_and_storage.storage.StorageType;
 import memorable.MemorableMessage;
 
 import java.io.IOException;
 
-public class InitLinkStartAndStoreListener extends Link {
-    private final int port;
-
-    public InitLinkStartAndStoreListener(Chain chain,
-                                         int port) {
+public final class InitLinkStartAndStoreListener extends Link<InitChain> {
+    public InitLinkStartAndStoreListener(InitChain chain) {
         super(chain);
-        this.port = port;
     }
 
     @Override
     protected boolean resolve() {
         PlainListener listener;
         try {
-            listener = new PlainListener(port,
+            listener = new PlainListener(chain.getPort(),
                     StorageType.GROUP);
         } catch (IOException e) {
             e.printStackTrace();

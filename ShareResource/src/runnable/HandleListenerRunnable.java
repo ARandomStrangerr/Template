@@ -22,6 +22,7 @@ public abstract class HandleListenerRunnable<T extends SocketInterface> implemen
                 e.printStackTrace();
                 break;
             }
+            // give the socket to a thread to handle
             new Thread(getHandleSocketRunnable(listener, socket)).start();
         }
         try {
@@ -32,5 +33,5 @@ public abstract class HandleListenerRunnable<T extends SocketInterface> implemen
         }
     }
 
-    protected abstract HandleIncomingSocketRunnable getHandleSocketRunnable(Listener<T> listener, T socket);
+    protected abstract HandleIncomingSocketRunnable<T> getHandleSocketRunnable(Listener<T> listener, T socket);
 }

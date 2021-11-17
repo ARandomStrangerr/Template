@@ -1,7 +1,6 @@
 package connection_and_storage.connection.socket;
 
 import connection_and_storage.connection.listener.Listener;
-import connection_and_storage.connection.listener.ListenerInterface;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,8 +10,19 @@ public abstract class SocketAbstract implements SocketInterface {
     private final Socket socket;
     private final BufferedReader br;
     private final BufferedWriter bw;
-    private volatile int priority;
+    private volatile int counter;
     private String key;
+
+    /**
+     * @param socket the socket which is instantiated
+     * @throws IOException when cannot initiate Buffer to read and write
+     */
+    public SocketAbstract(Socket socket) throws IOException {
+        this.socket = socket;
+        this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        counter = 0;
+    }
 
     /**
      * set the key (name) of this socket. This name will be used to set the name of this socket when added to collection
@@ -46,17 +56,6 @@ public abstract class SocketAbstract implements SocketInterface {
     }
 
     /**
-     * @param socket the socket which is instantiated
-     * @throws IOException
-     */
-    public SocketAbstract(Socket socket) throws IOException {
-        this.socket = socket;
-        this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        priority = 0;
-    }
-
-    /**
      * read data from the socket
      *
      * @return data from the stream
@@ -87,24 +86,24 @@ public abstract class SocketAbstract implements SocketInterface {
      * increase the priority of the socket
      */
     @Override
-    public synchronized void increasePriority() {
-        priority++;
+    public synchronized void increaseCounter() {
+        counter++;
     }
 
     /**
      * decrease the priority of the socket
      */
     @Override
-    public synchronized void decreasePriority() {
-        priority--;
+    public synchronized void decreaseCounter() {
+        counter--;
     }
 
     /**
      * @return number indicating priority of a socket
      */
     @Override
-    public synchronized int getPriority() {
-        return priority;
+    public synchronized int getCounter() {
+        return counter;
     }
 
     /**

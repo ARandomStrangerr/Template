@@ -37,7 +37,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
         if (!storageStructure.contains(key)) throw new NoSuchElementException();
         T returnSocket = null;
         for (Map.Entry<Integer, T> socket : storageStructure.get(key).entrySet()) {
-            if (returnSocket == null || returnSocket.getPriority() < socket.getValue().getPriority())
+            if (returnSocket == null || returnSocket.getCounter() < socket.getValue().getCounter())
                 returnSocket = socket.getValue();
         }
         return returnSocket;
@@ -84,7 +84,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return false;

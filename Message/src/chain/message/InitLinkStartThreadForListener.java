@@ -1,12 +1,11 @@
 package chain.message;
 
-import chain.Chain;
 import chain.Link;
 import memorable.MemorableMessage;
 import runnable.message.HandleListenerRunnable;
 
-public class InitLinkStartThreadForListener extends Link {
-    public InitLinkStartThreadForListener(Chain chain) {
+public final class InitLinkStartThreadForListener extends Link<InitChain> {
+    public InitLinkStartThreadForListener(InitChain chain) {
         super(chain);
     }
 

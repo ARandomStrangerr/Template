@@ -57,7 +57,7 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
      * @throws NullPointerException there is no socket associated with such name
      */
     @Override
-    public SocketInterface get(String key) throws NullPointerException {
+    public T get(String key) throws NullPointerException {
         return connectionStorage.get(key);
     }
 

@@ -4,15 +4,21 @@ import chain.Chain;
 import com.google.gson.JsonObject;
 import memorable.MemorableMessage;
 
-public class InitChain extends Chain {
+public final class InitChain extends Chain {
+    private final int port;
 
-    public InitChain(JsonObject processObject) {
-        super(processObject);
+    public InitChain(int port) {
+        super(null);
+        this.port = port;
     }
 
     @Override
     protected void chainConstruction() {
-        super.chain.add(new InitLinkStartAndStoreListener(this, 1998));
+        super.chain.add(new InitLinkStartAndStoreListener(this));
         super.chain.add(new InitLinkStartThreadForListener(this));
+    }
+
+    int getPort() {
+        return port;
     }
 }

@@ -63,7 +63,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         // reading loop
         Gson gson = new Gson();
         while (true) {
-            // read data from socket
+            // read string data from socket
             String requestString;
             try {
                 requestString = socket.read();
@@ -71,7 +71,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                 System.err.println("Broken pipe");
                 break;
             }
-            // process the given json object within a thread
+            // give the string to a thread to handle
             new Thread(() -> {
                 // convert the data into json object
                 JsonObject requestJsonObject;
@@ -81,11 +81,10 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                     System.err.println("Cannot convert to json format, skip the request");
                     return;
                 }
-                Chain processChain = getProcessChain(requestJsonObject);
-                if (processChain.resolve())
-                    getResolveChain(processChain.getProcessObject());
+                if (getProcessChain(requestJsonObject).resolve())
+                    getResolveChain(requestJsonObject).resolve();
                 else
-                    getRejectChain(processChain.getProcessObject());
+                    getRejectChain(requestJsonObject).resolve();
             }).start();
         }
         // remove the socket from the listener which accepted it
@@ -112,7 +111,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
      * chain which process the request
      *
      * @param request the request to process
-     * @return Chain object to run
+     * @return a Chain object to run
      */
     protected abstract Chain getProcessChain(JsonObject request);
 

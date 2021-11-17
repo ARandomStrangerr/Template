@@ -43,17 +43,17 @@ public interface SocketInterface {
      *
      * @return number indicating priority of a socket
      */
-    int getPriority();
+    int getCounter();
 
     /**
      * increase the priority of the socket
      */
-    void increasePriority();
+    void increaseCounter();
 
     /**
      * decrease the priority of the socket
      */
-    void decreasePriority();
+    void decreaseCounter();
 
     /**
      * close this socket then remove this instance from the storage

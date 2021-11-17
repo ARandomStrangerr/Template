@@ -29,7 +29,7 @@ public abstract class Chain {
     }
 
     /**
-     * @return get a deep copy of the chain
+     * @return the Json Object modifying
      */
     public final JsonObject getProcessObject() {
         return processObject;
