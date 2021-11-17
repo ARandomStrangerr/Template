@@ -81,7 +81,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                     System.err.println("Cannot convert to json format, skip the request");
                     return;
                 }
-                if (getProcessChain(requestJsonObject).resolve())
+                if (getProcessChain(requestJsonObject, socket).resolve())
                     getResolveChain(requestJsonObject).resolve();
                 else
                     getRejectChain(requestJsonObject).resolve();
@@ -113,7 +113,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
      * @param request the request to process
      * @return a Chain object to run
      */
-    protected abstract Chain getProcessChain(JsonObject request);
+    protected abstract Chain getProcessChain(JsonObject request, T socket);
 
     /**
      * chain which runs after the request is successfully handled
