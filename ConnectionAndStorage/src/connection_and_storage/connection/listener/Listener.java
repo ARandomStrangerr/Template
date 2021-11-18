@@ -1,28 +1,25 @@
 package connection_and_storage.connection.listener;
 
 import connection_and_storage.connection.socket.SocketInterface;
-import connection_and_storage.connection.socket.PlainSocket;
 import connection_and_storage.storage.GroupStorage;
 import connection_and_storage.storage.SingleStorage;
 import connection_and_storage.storage.StorageInterface;
 import connection_and_storage.storage.StorageType;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
 public abstract class Listener<T extends SocketInterface> implements ListenerInterface<T> {
 
-    private final ServerSocket socket;
+    private final ServerSocket listener;
     private final StorageInterface<T> connectionStorage;
 
     public Listener(int port,
                     StorageType type)
             throws IOException {
-        this.socket = new ServerSocket(port);
+        this.listener = new ServerSocket(port);
         switch (type) {
             case GROUP:
                 connectionStorage = new GroupStorage<>();
@@ -47,7 +44,7 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
     }
 
     protected Socket acceptSocket() throws IOException {
-        return socket.accept();
+        return listener.accept();
     }
 
     /**
@@ -98,6 +95,6 @@ public abstract class Listener<T extends SocketInterface> implements ListenerInt
         for (T socket : connectionStorage) {
             socket.close();
         }
-        socket.close();
+        listener.close();
     }
 }
