@@ -34,12 +34,15 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         }
         // verification step and set key of the socket
         try {
-            if (!verificationAndSetKeySocket(socket)) {
+            if (!verificationAndSetKeySocket(socket)) { // fail to verify, throw an exception
                 throw new SecurityException("incoming socket does not have the permission to connect");
             }
+            // success to verify and set the key, keep going with the flow
         } catch (Exception e) {
             System.err.println("Trouble happened in the verification step");
+            //print out the line to debug
             e.printStackTrace();
+            //close the socket
             try {
                 socket.close();
             } catch (IOException e1) {
@@ -50,7 +53,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         // put the socket into the listener collection
         try {
             listener.put(socket.getKey(), socket);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { // throw when the key of the socket has not been set
             System.err.println("The name of the socket has not been set");
             e.printStackTrace();
             try {
@@ -81,7 +84,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                     System.err.println("Cannot convert to json format, skip the request");
                     return;
                 }
-                if (getProcessChain(requestJsonObject, socket).resolve())
+                if (getProcessChain(requestJsonObject).resolve())
                     getResolveChain(requestJsonObject).resolve();
                 else
                     getRejectChain(requestJsonObject).resolve();
@@ -113,7 +116,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
      * @param request the request to process
      * @return a Chain object to run
      */
-    protected abstract Chain getProcessChain(JsonObject request, T socket);
+    protected abstract Chain getProcessChain(JsonObject request);
 
     /**
      * chain which runs after the request is successfully handled

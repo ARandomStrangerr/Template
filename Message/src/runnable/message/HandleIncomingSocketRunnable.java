@@ -6,9 +6,13 @@ import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
 
+import java.io.IOException;
+
 public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketRunnable<PlainSocket> {
+    private final PlainSocket socket;
     public HandleIncomingSocketRunnable(Listener<PlainSocket> listener, PlainSocket socket) {
         super(listener, socket);
+        this.socket = socket;
     }
 
     /**
@@ -20,6 +24,12 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected boolean verificationAndSetKeySocket(PlainSocket socket) {
+        String data;
+        try {
+            data = socket.read();
+        } catch (IOException e){
+            return false;
+        }
         return false;
     }
 
@@ -30,7 +40,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      * @return Chain object to run
      */
     @Override
-    protected Chain getProcessChain(JsonObject request, PlainSocket socket) {
+    protected Chain getProcessChain(JsonObject request) {
         return new ProcessChain(request, socket);
     }
 
