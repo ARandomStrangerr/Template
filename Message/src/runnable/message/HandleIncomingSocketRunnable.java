@@ -1,6 +1,7 @@
 package runnable.message;
 
 import chain.Chain;
+import chain.message.ProcessChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
@@ -29,8 +30,8 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      * @return Chain object to run
      */
     @Override
-    protected Chain getProcessChain(JsonObject request) {
-        return null;
+    protected Chain getProcessChain(JsonObject request, PlainSocket socket) {
+        return new ProcessChain(request, socket);
     }
 
     /**
