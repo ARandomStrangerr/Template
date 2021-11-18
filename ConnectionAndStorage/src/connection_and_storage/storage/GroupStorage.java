@@ -69,7 +69,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
     @Override
     public void remove(String key)
             throws IllegalAccessException {
-        throw new IllegalAccessException("This method is not available for the class");
+        throw new IllegalAccessException("This method is not available for group storage");
     }
 
     @Override
