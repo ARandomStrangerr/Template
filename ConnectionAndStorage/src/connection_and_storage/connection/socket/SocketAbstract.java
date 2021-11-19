@@ -65,7 +65,7 @@ public abstract class SocketAbstract implements SocketInterface {
     public String read() throws IOException {
         String read = br.readLine();
         if(read == null) throw new IOException("Broken pipe. Probably the socket is closed");
-        return br.readLine();
+        return read;
     }
 
     /**
