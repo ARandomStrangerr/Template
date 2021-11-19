@@ -16,7 +16,9 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
 
     @Override
     public void run() {
+        // verify and do various thing with the socket before read loop. Wrong procedure might lead to rejection of the socket
         verification(socket);
+        // loop to read the request receive from the socket
         Gson gson = new Gson();
         while (true) {
             String requestString;
@@ -36,11 +38,10 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                     e.printStackTrace();
                     return;
                 }
-                Chain processChain = getProcessChain(jsonObject);
-                if (processChain.resolve()) {
-                    getResolveChain(processChain.getProcessObject());
+                if (getProcessChain(jsonObject).resolve()) {
+                    getResolveChain(jsonObject).resolve();
                 } else {
-                    getRejectChain(processChain.getProcessObject());
+                    getRejectChain(jsonObject).resolve();
                 }
             }).start();
         }
@@ -59,7 +60,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
      * chain which process the request
      *
      * @param request the request to process
-     * @return Chain object to run
+     * @return a Chain object to run
      */
     protected abstract Chain getProcessChain(JsonObject request);
 
