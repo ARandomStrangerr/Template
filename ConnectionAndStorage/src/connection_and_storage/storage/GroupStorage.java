@@ -17,7 +17,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
     @Override
     public void put(String key,
                     T socket) {
-        if (this.storageStructure.contains(key)) {
+        if (this.storageStructure.containsKey(key)) {
             storageStructure.get(key).put(socket.hashCode(), socket);
         } else {
             Hashtable<Integer, T> temp = new Hashtable<>();
@@ -34,7 +34,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
     @Override
     public T get(String key)
             throws NoSuchElementException {
-        if (!storageStructure.contains(key)) throw new NoSuchElementException();
+        if (!storageStructure.containsKey(key)) throw new NoSuchElementException("Provided key does not match any group");
         T returnSocket = null;
         for (Map.Entry<Integer, T> socket : storageStructure.get(key).entrySet()) {
             if (returnSocket == null || returnSocket.getCounter() < socket.getValue().getCounter())
@@ -52,9 +52,9 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
     @Override
     public T get(String key, int hashCode)
             throws NoSuchElementException {
-        if (!storageStructure.contains(key))
+        if (!storageStructure.containsKey(key))
             throw new NoSuchElementException("Provided key does not mach any group");
-        else if (!storageStructure.get(key).contains(hashCode))
+        else if (!storageStructure.get(key).containsKey(hashCode))
             throw new NoSuchElementException("Provided hashCode does not match any socket");
         else
             return storageStructure.get(key).get(hashCode);
@@ -76,7 +76,7 @@ public class GroupStorage<T extends SocketInterface> implements StorageInterface
     public void remove(String key,
                        int hashCode)
             throws NoSuchElementException {
-        if (!storageStructure.contains(key))    // check if the given key response to a group
+        if (!storageStructure.containsKey(key))    // check if the given key response to a group
             throw new NoSuchElementException("Provided key does not match any group");
         storageStructure.get(key).remove(hashCode); // remove the socket
         if (storageStructure.get(key).isEmpty())    // check the group which had a socket removed is empty
