@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketRunnable<PlainSocket> {
     private final PlainSocket socket;
+
     public HandleIncomingSocketRunnable(Listener<PlainSocket> listener, PlainSocket socket) {
         super(listener, socket);
         this.socket = socket;
@@ -25,15 +26,22 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected boolean verificationAndSetKeySocket(PlainSocket socket) {
-        String data;
+        String moduleName;
         try {
-            data = socket.read();
-        } catch (IOException e){
-            System.err.println("cannot read the data from the incoming socket");
+            moduleName = socket.read();
+        } catch (IOException e) {
+            System.err.println("cannot read the module name from the incoming socket");
             e.printStackTrace();
             return false;
         }
-        socket.setKey(data);
+        socket.setKey(moduleName);
+        try {
+            socket.write(String.valueOf(socket.hashCode()));
+        } catch (IOException e) {
+            System.err.println("cannot write the moduleName to the incoming socket");
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -66,7 +74,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      * @return a Chain object to run
      */
     @Override
-    protected Chain getRejectChain(JsonObject request){
+    protected Chain getRejectChain(JsonObject request) {
         return new ResolveChain(request);
     }
 }
