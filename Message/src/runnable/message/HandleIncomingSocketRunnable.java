@@ -2,6 +2,7 @@ package runnable.message;
 
 import chain.Chain;
 import chain.message.ProcessChain;
+import chain.message.ResolveChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
@@ -28,9 +29,12 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
         try {
             data = socket.read();
         } catch (IOException e){
+            System.err.println("cannot read the data from the incoming socket");
+            e.printStackTrace();
             return false;
         }
-        return false;
+        socket.setKey(data);
+        return true;
     }
 
     /**
@@ -52,7 +56,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected Chain getResolveChain(JsonObject request) {
-        return null;
+        return new ResolveChain(request);
     }
 
     /**
@@ -62,7 +66,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      * @return a Chain object to run
      */
     @Override
-    protected Chain getRejectChain(JsonObject request) {
-        return null;
+    protected Chain getRejectChain(JsonObject request){
+        return new ResolveChain(request);
     }
 }
