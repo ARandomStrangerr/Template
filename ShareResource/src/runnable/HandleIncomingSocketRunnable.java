@@ -20,11 +20,11 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
 
     @Override
     public void run() {
-        // set timeout for the verification step
+        // set time limit
         try {
             socket.setSoTimeout(5000);
         } catch (IOException e) {
-            System.err.println("The socket has been closed");
+            System.err.println("Cannot set timeout. The socket has been closed");
             e.printStackTrace();
             try {
                 socket.close();
@@ -50,6 +50,18 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
             }
             return;
         }
+        //remove the time limit
+        try {
+            socket.setSoTimeout(0);
+        } catch (IOException e){
+            System.err.println("Cannot remove timeout. Socket has been closed");
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
         // put the socket into the listener collection
         try {
             listener.put(socket.getKey(), socket);
@@ -72,6 +84,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                 requestString = socket.read();
             } catch (IOException e) {
                 System.err.println("Broken pipe");
+                e.printStackTrace();
                 break;
             }
             // give the string to a thread to handle
