@@ -13,7 +13,6 @@ public final class ProcessLinkDecreaseCounter extends Link<ProcessChain> {
         JsonObject headerObject = chain.getProcessObject().get("header").getAsJsonObject();
         if (headerObject.has("decreaseCounter") && headerObject.get("decreaseCounter").getAsBoolean())
             chain.getPlainSocket().decreaseCounter();
-
         return true;
     }
 }
