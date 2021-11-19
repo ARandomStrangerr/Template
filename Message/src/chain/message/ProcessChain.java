@@ -6,6 +6,7 @@ import connection_and_storage.connection.socket.PlainSocket;
 
 public final class ProcessChain extends Chain {
     private final PlainSocket plainSocket;
+
     public ProcessChain(JsonObject processObject,
                         PlainSocket plainSocket) {
         super(processObject);
@@ -15,9 +16,10 @@ public final class ProcessChain extends Chain {
     @Override
     protected void chainConstruction() {
         chain.add(new ProcessLinkDecreaseCounter(this));
+        chain.add(new ProcessLinkFindModuleAndSendRequest(this));
     }
 
-    PlainSocket getPlainSocket(){
+    PlainSocket getPlainSocket() {
         return plainSocket;
     }
 }
