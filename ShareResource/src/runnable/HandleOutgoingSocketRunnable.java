@@ -1,6 +1,7 @@
 package runnable;
 
 import chain.Chain;
+import chain.LinkObserver;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.socket.SocketInterface;
@@ -9,9 +10,11 @@ import java.io.IOException;
 
 public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> implements Runnable {
     private final T socket;
+    private final ThreadStorage storage;
 
     public HandleOutgoingSocketRunnable(T socket) {
         this.socket = socket;
+        this.storage = new ThreadStorage();
     }
 
     @Override
@@ -29,7 +32,8 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                 e.printStackTrace();
                 break;
             }
-            new Thread(() -> {
+            Runnable runnable = () -> {
+                // convert the message to json object
                 JsonObject jsonObject;
                 try {
                     jsonObject = gson.fromJson(requestString, JsonObject.class);
@@ -38,12 +42,28 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                     e.printStackTrace();
                     return;
                 }
-                if (getProcessChain(jsonObject).resolve()) {
-                    getResolveChain(jsonObject).resolve();
+                // get from module name of the incoming message
+                String fromModuleName = jsonObject.get("header").getAsJsonObject().get("from").getAsString();
+                if(fromModuleName.equals(getModuleName())) {
+                    // treat the request as old request
+                    int threadIdentifier = jsonObject.get("header").getAsJsonObject().get("thread").getAsInt();
+                    LinkObserver linkObserver = storage.get(threadIdentifier);
+                    try {
+                        linkObserver.synchronizedNotify(jsonObject);
+                    } catch (InterruptedException e) {
+                        System.err.println("cannot past the old request to the paused thread");
+                        e.printStackTrace();
+                    }
                 } else {
-                    getRejectChain(jsonObject).resolve();
+                    // treat the request as new request
+                    if (getProcessChain(jsonObject).resolve()) {
+                        getResolveChain(jsonObject).resolve();
+                    } else {
+                        getRejectChain(jsonObject).resolve();
+                    }
                 }
-            }).start();
+            };
+            new Thread(runnable, String.valueOf(runnable.hashCode())).start();
         }
         try {
             socket.close();
@@ -79,4 +99,10 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
      * @return a Chain object to run
      */
     protected abstract Chain getRejectChain(JsonObject request);
+
+    protected abstract String getModuleName();
+
+    public void onHold(int identifier, LinkObserver link){
+        storage.put(identifier, link);
+    }
 }
