@@ -16,6 +16,9 @@ public class ProcessChain extends Chain {
         super.chain.add(new ProcessLinkMaterializeExcelFile(this));
         super.chain.add(new ProcessLinkReadExcelFile(this));
         super.chain.add(new ProcessLinkSendInvoice(this));
+        super.chain.add(new ProcessLinkCreateResponse(this));
+        super.chain.add(new LinkCleanupJsonObject(this));
+        super.chain.add(new LinkSendToMessageModule(this));
     }
 
     public void setExcelFile(File excelFile) {
