@@ -1,12 +1,11 @@
 package chain.viettel_invoice_send;
 
 import chain.Link;
-import connection_and_storage.connection.socket.PlainSocket;
+import memorable.MemorableViettelInvoiceSend;
+import thread.viettel_invoice_send.HandleOutgoingSocketRunnable;
 
-import java.io.IOException;
-
-public class InitLinkStartSocket extends Link<InitChain> {
-    public InitLinkStartSocket(InitChain chain) {
+public class InitLinkStartThreadForOutgoingSocket extends Link<InitChain> {
+    public InitLinkStartThreadForOutgoingSocket(InitChain chain) {
         super(chain);
     }
 
@@ -18,12 +17,7 @@ public class InitLinkStartSocket extends Link<InitChain> {
      */
     @Override
     protected boolean resolve() {
-        PlainSocket socket;
-        try {
-            socket = new PlainSocket(chain.getAddress(), chain.getPort());
-        } catch (IOException e) {
-
-        }
+        new Thread(new HandleOutgoingSocketRunnable(MemorableViettelInvoiceSend.getOutgoingSocket())).start();
         return false;
     }
 }
