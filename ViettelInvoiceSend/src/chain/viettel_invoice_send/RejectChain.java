@@ -10,6 +10,8 @@ public class RejectChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-
+        super.chain.add(new RejectChainCreateResponse(this));
+        super.chain.add(new LinkCleanupJsonObject(this));
+        super.chain.add(new LinkSendToMessageModule(this));
     }
 }
