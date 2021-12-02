@@ -40,7 +40,7 @@ public class ProcessLinkSendInvoice extends Link<ProcessChain> {
             // create the connection to the server
             HttpURLConnection con;
             try {
-                con = (HttpURLConnection) new URL("").openConnection();
+                con = (HttpURLConnection) new URL("https://api-sinvoice.viettel.vn:443/InvoiceAPI/InvoiceWS/createInvoice/" + username).openConnection();
                 con.setDoOutput(true);
                 con.setRequestMethod("POST");
                 con.setRequestProperty("Content-Type", "application/json");
