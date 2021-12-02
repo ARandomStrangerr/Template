@@ -53,7 +53,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         //remove the time limit
         try {
             socket.setSoTimeout(0);
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println("Cannot remove timeout. Socket has been closed");
             e.printStackTrace();
             try {
@@ -62,6 +62,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                 e1.printStackTrace();
             }
         }
+        System.out.printf("%s - %d module is connected%n", socket.getKey(), socket.hashCode());
         // put the socket into the listener collection
         try {
             listener.put(socket.getKey(), socket);
@@ -112,6 +113,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        System.out.printf("%s - %d module is disconnected%n", socket.getKey(), socket.hashCode());
     }
 
     /**
