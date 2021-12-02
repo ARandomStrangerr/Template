@@ -1,9 +1,12 @@
-import com.google.gson.JsonObject;
+import chain.viettel_invoice_send.InitChain;
+
+import java.net.InetAddress;
 
 public class ViettelInvoiceSend {
-    public static void main(String[] args) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("prop1", "bacd");
-        jsonObject.get("prop1").getAsInt();
+    public static void main(String[] args) throws Exception {
+        new InitChain("ViettelInvoiceSend",
+                InetAddress.getByName("localhost"),
+                1998)
+                .resolve();
     }
 }
