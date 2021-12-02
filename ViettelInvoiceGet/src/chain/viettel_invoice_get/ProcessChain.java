@@ -10,6 +10,6 @@ public class ProcessChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-
+        super.chain.add(new ProcessLinkGetInvoice(this));
     }
 }
