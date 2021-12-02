@@ -2,7 +2,7 @@ package memorable;
 
 import connection_and_storage.connection.socket.PlainSocket;
 
-public class ViettelInvoiceMemorable {
+public class ViettelInvoiceGetMemorable {
     private static int hashCode;
     private static String name;
     private static PlainSocket outgoingConnection;
@@ -12,7 +12,7 @@ public class ViettelInvoiceMemorable {
     }
 
     public static void setHashCode(int hashCode) {
-        ViettelInvoiceMemorable.hashCode = hashCode;
+        ViettelInvoiceGetMemorable.hashCode = hashCode;
     }
 
     public static String getName() {
@@ -20,7 +20,7 @@ public class ViettelInvoiceMemorable {
     }
 
     public static void setName(String name) {
-        ViettelInvoiceMemorable.name = name;
+        ViettelInvoiceGetMemorable.name = name;
     }
 
     public static PlainSocket getOutgoingConnection() {
@@ -28,6 +28,6 @@ public class ViettelInvoiceMemorable {
     }
 
     public static void setOutgoingConnection(PlainSocket outgoingConnection) {
-        ViettelInvoiceMemorable.outgoingConnection = outgoingConnection;
+        ViettelInvoiceGetMemorable.outgoingConnection = outgoingConnection;
     }
 }
