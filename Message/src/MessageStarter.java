@@ -1,13 +1,13 @@
 import chain.message.InitChain;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class MessageStarter {
     public static void main(String[] args) throws Exception {
@@ -15,54 +15,70 @@ public class MessageStarter {
     }
 }
 
-class TestJsonNull{
-    public static void main(String[] args) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("prop1", null);
-
-        System.out.println(jsonObject.get("prop1").isJsonNull());
-    }
-}
-
-class TestStarter {
-    public static void main(String[] args) throws Exception{
+class Class1 {
+    public static void main(String[] args) throws Exception {
         Socket socket = new Socket(InetAddress.getByName("localhost"), 1998);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        bw.write("RECEIVE_MODULE");
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        bw.write("Module1");
         bw.newLine();
         bw.flush();
-        int assignedHashCode = Integer.parseInt(br.readLine());
-        System.out.println(assignedHashCode);
-        System.out.println(br.readLine());
+        int assignedId = Integer.parseInt(br.readLine());
+        JsonObject jsonObject = new JsonObject(),
+                headerObject = new JsonObject(),
+                bodyObject = new JsonObject();
+
+        JsonArray toObject = new JsonArray();
+        toObject.add("ViettelInvoiceGet");
+        headerObject.addProperty("from", "Module1");
+        headerObject.addProperty("hashCode", assignedId);
+        headerObject.add("to", toObject);
+        headerObject.addProperty("status", true);
+
+        bodyObject.addProperty("username", "0101954482");
+        bodyObject.addProperty("password", "123456aA@");
+        bodyObject.addProperty("templateCode", "01GTKT0/001");
+        bodyObject.addProperty("invoiceSeries", "KT/20E");
+        bodyObject.addProperty("start", 69000);
+        bodyObject.addProperty("end", 70000);
+
+        jsonObject.add("header", headerObject);
+        jsonObject.add("body", bodyObject);
+
+        bw.write(jsonObject.toString());
+        bw.newLine();
+        bw.flush();
+
+        Gson gson = new Gson();
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+            JsonObject inputObject = gson.fromJson(line, JsonObject.class);
+            File file = new File("/home/thanhdo/test/" + inputObject.get("body").getAsJsonObject().get("name").getAsString());
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(Base64.getDecoder().decode(inputObject.get("body").getAsJsonObject().get("file").getAsString().getBytes(StandardCharsets.UTF_8)));
+            fos.close();
+        }
     }
 }
 
-class TestStarter2{
-    public static void main(String[] args) throws Exception{
-        Socket socket = new Socket(InetAddress.getByName("localhost"),1998);
+class Class2 {
+    public static void main(String[] args) throws Exception {
+        Socket socket = new Socket(InetAddress.getByName("localhost"), 1998);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        bw.write("SEND_MODULE");
+        bw.write("Module2");
         bw.newLine();
         bw.flush();
-        int assignedHashCode = Integer.parseInt(br.readLine());
-        System.out.println(assignedHashCode);
-        JsonObject object = new JsonObject(),
-                headerObject = new JsonObject();
-        headerObject.addProperty("from","SEND_MODULE");
-        headerObject.addProperty("hashCode", assignedHashCode);
-        headerObject.addProperty("status", true);
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add("RECEIVE_MODULE");
-        headerObject.add("to", jsonArray);
+        int assignedId = Integer.parseInt(br.readLine());
+        String input = br.readLine();
 
-        object.add("header", headerObject);
+        System.out.println(input);
 
-        bw.write(object.toString());
+        Gson gson = new Gson();
+        JsonObject jsonInput = gson.fromJson(input, JsonObject.class);
+        jsonInput.addProperty("prop2", "prop2");
+        bw.write(jsonInput.toString());
         bw.newLine();
         bw.flush();
-
-        Thread.sleep(10000);
+        Thread.sleep(1000000);
     }
 }
