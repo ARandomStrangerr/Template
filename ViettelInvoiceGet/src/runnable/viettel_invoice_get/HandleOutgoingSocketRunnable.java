@@ -1,37 +1,36 @@
 package runnable.viettel_invoice_get;
 
 import chain.Chain;
+import chain.viettel_invoice_get.ProcessChain;
 import com.google.gson.JsonObject;
-import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
-import memorable.ViettelInvoiceMemorable;
-import runnable.HandleIncomingSocketRunnable;
+import memorable.ViettelInvoiceGetMemorable;
 
 import java.io.IOException;
 
-public class HandleOutgoingSocketRunnable extends HandleIncomingSocketRunnable<PlainSocket> {
-    public HandleOutgoingSocketRunnable(Listener<PlainSocket> listener, PlainSocket socket) {
-        super(listener, socket);
+public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketRunnable<PlainSocket> {
+    public HandleOutgoingSocketRunnable(PlainSocket socket) {
+        super(socket);
     }
 
     /**
-     * verify the socket
+     * step to verify sockets and get necessary information back from the host
      *
-     * @param socket the instance that being verified
-     * @return true when the socket pass the verification
-     * false when the socket does not pass the verification
+     * @param socket socket which we are operating on
+     * @return <code>True</code> when successfully verify
+     * <code>false</code> when unsuccessfully verif
      */
     @Override
-    protected boolean verificationAndSetKeySocket(PlainSocket socket) {
+    public boolean verification(PlainSocket socket) {
         try {
-            socket.write(ViettelInvoiceMemorable.getName());
+            socket.write(ViettelInvoiceGetMemorable.getName());
         } catch (IOException e) {
             System.err.println("Cannot write the name into socket");
             e.printStackTrace();
             return false;
         }
         try {
-            ViettelInvoiceMemorable.setHashCode(Integer.parseInt(socket.read()));
+            ViettelInvoiceGetMemorable.setHashCode(Integer.parseInt(socket.read()));
         } catch (IOException e) {
             System.err.println("Cannot read the hash code from the message module");
             e.printStackTrace();
@@ -44,6 +43,11 @@ public class HandleOutgoingSocketRunnable extends HandleIncomingSocketRunnable<P
         return true;
     }
 
+    @Override
+    protected String getModuleName() {
+        return ViettelInvoiceGetMemorable.getName();
+    }
+
     /**
      * chain which process the request
      *
@@ -52,7 +56,7 @@ public class HandleOutgoingSocketRunnable extends HandleIncomingSocketRunnable<P
      */
     @Override
     protected Chain getProcessChain(JsonObject request) {
-        return null;
+        return new ProcessChain(request);
     }
 
     /**
