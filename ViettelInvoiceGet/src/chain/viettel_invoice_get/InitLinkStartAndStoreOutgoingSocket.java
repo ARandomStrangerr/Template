@@ -6,8 +6,8 @@ import memorable.ViettelInvoiceGetMemorable;
 
 import java.io.IOException;
 
-public class InitLinkOpenAndSaveOutgoingSocket extends Link<InitChain> {
-    public InitLinkOpenAndSaveOutgoingSocket(InitChain chain) {
+public class InitLinkStartAndStoreOutgoingSocket extends Link<InitChain> {
+    public InitLinkStartAndStoreOutgoingSocket(InitChain chain) {
         super(chain);
     }
 
@@ -24,7 +24,7 @@ public class InitLinkOpenAndSaveOutgoingSocket extends Link<InitChain> {
         try {
             outgoingConnection = new PlainSocket(chain.getAddress(), chain.getPort());
         } catch (IOException e) {
-            System.err.println("cannot open socket to the main module");
+            System.err.println(ViettelInvoiceGetMemorable.getName() + " - cannot open socket to the main module");
             e.printStackTrace();
             System.exit(1);
             return false;

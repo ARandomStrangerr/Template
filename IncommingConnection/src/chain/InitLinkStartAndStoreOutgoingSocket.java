@@ -1,12 +1,11 @@
-package chain.viettel_invoice_send;
+package chain;
 
-import chain.Link;
 import connection_and_storage.connection.socket.PlainSocket;
-import memorable.MemorableViettelInvoiceSend;
+import memorable.IncomingConnectionMemorable;
 
 import java.io.IOException;
 
-public class InitLinkStartAndStoreOutgoingSocket extends Link<InitChain> {
+public final class InitLinkStartAndStoreOutgoingSocket extends Link<InitChain> {
     public InitLinkStartAndStoreOutgoingSocket(InitChain chain) {
         super(chain);
     }
@@ -19,16 +18,17 @@ public class InitLinkStartAndStoreOutgoingSocket extends Link<InitChain> {
      */
     @Override
     protected boolean resolve() {
-        PlainSocket socket;
+        PlainSocket outgoingSocket;
         try {
-            socket = new PlainSocket(chain.getAddress(), chain.getPort());
+            outgoingSocket = new PlainSocket(chain.getOutgoingSocketAddress(),
+                    chain.getOutgoingSocketPort());
         } catch (IOException e) {
-            System.err.println(MemorableViettelInvoiceSend.getName() + " - Cannot initiate connection with the message module");
+            System.err.println(IncomingConnectionMemorable.getName() + " - fail to open outgoing connection");
             e.printStackTrace();
             System.exit(1);
             return false;
         }
-        MemorableViettelInvoiceSend.setOutgoingSocket(socket);
+        IncomingConnectionMemorable.setOutgoingSocket(outgoingSocket);
         return true;
     }
 }

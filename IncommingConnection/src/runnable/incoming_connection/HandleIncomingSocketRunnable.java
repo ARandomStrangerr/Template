@@ -1,21 +1,14 @@
-package runnable.message;
+package runnable.incoming_connection;
 
 import chain.Chain;
-import chain.message.ProcessChain;
-import chain.message.ResolveChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
-import memorable.MemorableMessage;
-
-import java.io.IOException;
+import memorable.IncomingConnectionMemorable;
 
 public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketRunnable<PlainSocket> {
-    private final PlainSocket socket;
-
     public HandleIncomingSocketRunnable(Listener<PlainSocket> listener, PlainSocket socket) {
         super(listener, socket);
-        this.socket = socket;
     }
 
     /**
@@ -27,34 +20,18 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected boolean verificationAndSetKeySocket(PlainSocket socket) {
-        String moduleName;
-        try {
-            moduleName = socket.read();
-        } catch (IOException e) {
-            System.err.println("cannot read the module name from the incoming socket");
-            e.printStackTrace();
-            return false;
-        }
-        socket.setKey(moduleName);
-        try {
-            socket.write(String.valueOf(socket.hashCode()));
-        } catch (IOException e) {
-            System.err.println("cannot write the moduleName to the incoming socket");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
      * chain which process the request
      *
      * @param request the request to process
-     * @return Chain object to run
+     * @return a Chain object to run
      */
     @Override
     protected Chain getProcessChain(JsonObject request) {
-        return new ProcessChain(request, socket);
+        return null;
     }
 
     /**
@@ -65,7 +42,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected Chain getResolveChain(JsonObject request) {
-        return new ResolveChain(request);
+        return null;
     }
 
     /**
@@ -76,11 +53,11 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected Chain getRejectChain(JsonObject request) {
-        return new ResolveChain(request);
+        return null;
     }
 
     @Override
     protected String getName() {
-        return MemorableMessage.getName();
+        return IncomingConnectionMemorable.getName();
     }
 }

@@ -39,8 +39,8 @@ class Class1 {
         bodyObject.addProperty("password", "123456aA@");
         bodyObject.addProperty("templateCode", "01GTKT0/001");
         bodyObject.addProperty("invoiceSeries", "KT/20E");
-        bodyObject.addProperty("start", 69000);
-        bodyObject.addProperty("end", 70000);
+        bodyObject.addProperty("start", 31986);
+        bodyObject.addProperty("end", 70642);
 
         jsonObject.add("header", headerObject);
         jsonObject.add("body", bodyObject);
@@ -52,7 +52,7 @@ class Class1 {
         Gson gson = new Gson();
         for (String line = br.readLine(); line != null; line = br.readLine()) {
             JsonObject inputObject = gson.fromJson(line, JsonObject.class);
-            File file = new File("/home/thanhdo/test/" + inputObject.get("body").getAsJsonObject().get("name").getAsString());
+            File file = new File("/home/thanhdo/test/" + inputObject.get("body").getAsJsonObject().get("name").getAsString() + ".pdf");
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(Base64.getDecoder().decode(inputObject.get("body").getAsJsonObject().get("file").getAsString().getBytes(StandardCharsets.UTF_8)));
             fos.close();

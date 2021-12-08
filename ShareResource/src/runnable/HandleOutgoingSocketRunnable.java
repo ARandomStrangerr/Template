@@ -21,12 +21,13 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
     public void run() {
         // verify and do various thing with the socket before read loop. Wrong procedure might lead to rejection of the socket
         if (!verification(socket)){
+            System.err.println(getModuleName() + " - fail to verify outgoing socket");
             try {
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.exit(1);
+            System.exit(1); // the outgoing socket does not work, proceed to close the program
         }
         // loop to read the request receive from the socket
         Gson gson = new Gson();
@@ -35,7 +36,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
             try {
                 requestString = socket.read();
             } catch (IOException e) {
-                System.err.println("Likely the socket is closed");
+                System.err.println(getModuleName() + " - Likely the outgoing socket is closed");
                 e.printStackTrace();
                 break;
             }
@@ -45,7 +46,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                 try {
                     jsonObject = gson.fromJson(requestString, JsonObject.class);
                 } catch (Exception e) {
-                    System.err.println("Cannot convert to Json Object, skip the request");
+                    System.err.println(getModuleName() + " - Cannot convert to Json Object, skip the request");
                     e.printStackTrace();
                     return;
                 }
@@ -58,7 +59,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                     try {
                         linkObserver.synchronizedNotify(jsonObject);
                     } catch (InterruptedException e) {
-                        System.err.println("cannot past the old request to the paused thread");
+                        System.err.println(getModuleName() + " - cannot past the old request to the paused thread");
                         e.printStackTrace();
                     }
                 } else {
@@ -75,7 +76,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
         try {
             socket.close();
         } catch (IOException e) {
-            System.err.println("Fatal error, cannot close the socket after socket to main branch is broken");
+            System.err.println(getModuleName() + " - Fatal error, cannot close the socket after socket to main branch is broken");
             e.printStackTrace();
             System.exit(1);
         }

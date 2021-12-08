@@ -19,7 +19,9 @@ public final class InitLinkStartAndStoreListener extends Link<InitChain> {
             listener = new PlainListener(chain.getPort(),
                     StorageType.GROUP);
         } catch (IOException e) {
+            System.err.println(MemorableMessage.getName() + " - Cannot open listener");
             e.printStackTrace();
+            System.exit(1);
             return false;
         }
         MemorableMessage.setListener(listener);

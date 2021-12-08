@@ -20,7 +20,7 @@ public class InitChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-        chain.add(new InitLinkOpenAndSaveOutgoingSocket(this));
+        chain.add(new InitLinkStartAndStoreOutgoingSocket(this));
         chain.add(new InitLinkStartThreadForOutgoingSocket(this));
     }
 

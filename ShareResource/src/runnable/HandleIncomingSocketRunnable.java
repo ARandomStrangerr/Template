@@ -24,7 +24,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         try {
             socket.setSoTimeout(5000);
         } catch (IOException e) {
-            System.err.println("Cannot set timeout. The socket has been closed");
+            System.err.println(getName() + " - Cannot set timeout. Probably the socket has been closed");
             e.printStackTrace();
             try {
                 socket.close();
@@ -35,11 +35,11 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         // verification step and set key of the socket
         try {
             if (!verificationAndSetKeySocket(socket)) { // fail to verify, throw an exception
-                throw new SecurityException("incoming socket does not have the permission to connect");
+                throw new SecurityException(getName() + " - incoming socket does not have the permission to connect");
             }
             // success to verify and set the key, keep going with the flow
         } catch (Exception e) {
-            System.err.println("Trouble happened in the verification step");
+            System.err.println(getName() + " - Trouble happened in the verification step");
             //print out the line to debug
             e.printStackTrace();
             //close the socket
@@ -54,7 +54,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         try {
             socket.setSoTimeout(0);
         } catch (IOException e) {
-            System.err.println("Cannot remove timeout. Socket has been closed");
+            System.err.println(getName() + " - Cannot remove timeout. Probably the socket has been closed");
             e.printStackTrace();
             try {
                 socket.close();
@@ -62,12 +62,11 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                 e1.printStackTrace();
             }
         }
-        System.out.printf("%s - %d module is connected%n", socket.getKey(), socket.hashCode());
         // put the socket into the listener collection
         try {
             listener.put(socket.getKey(), socket);
         } catch (NullPointerException e) { // throw when the key of the socket has not been set
-            System.err.println("The name of the socket has not been set");
+            System.err.println(getName() + " - The name of the socket has not been set");
             e.printStackTrace();
             try {
                 socket.close();
@@ -76,6 +75,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
             }
             return;
         }
+        System.out.printf(getName() + " - %s - %d module is connected%n", socket.getKey(), socket.hashCode());
         // reading loop
         Gson gson = new Gson();
         while (true) {
@@ -84,7 +84,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
             try {
                 requestString = socket.read();
             } catch (IOException e) {
-                System.err.println("Broken pipe");
+                System.err.printf(getName() + " - Connection to %s - %d module is broken, probably the socket to the module is closed", socket.getKey(), socket.hashCode());
                 e.printStackTrace();
                 break;
             }
@@ -113,7 +113,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        System.out.printf("%s - %d module is disconnected%n", socket.getKey(), socket.hashCode());
+        System.out.printf(getName() + " - Connection to %s - %d module is closed%n", socket.getKey(), socket.hashCode());
     }
 
     /**
@@ -148,4 +148,6 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
      * @return a Chain object to run
      */
     protected abstract Chain getRejectChain(JsonObject request);
+
+    protected abstract String getName();
 }
