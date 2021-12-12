@@ -11,7 +11,7 @@ import java.util.Base64;
 
 public class MessageStarter {
     public static void main(String[] args) throws Exception {
-        new InitChain(1998).resolve();
+        new InitChain("Message",1998).resolve();
     }
 }
 

@@ -89,7 +89,7 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                 break;
             }
             // give the string to a thread to handle
-            new Thread(() -> {
+            Runnable runnable = () -> {
                 // convert the data into json object
                 JsonObject requestJsonObject;
                 try {
@@ -102,7 +102,8 @@ public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> im
                     getResolveChain(requestJsonObject).resolve();
                 else
                     getRejectChain(requestJsonObject).resolve();
-            }).start();
+            };
+            new Thread(runnable).start();
         }
         // remove the socket from the listener which accepted it
         listener.remove(socket);

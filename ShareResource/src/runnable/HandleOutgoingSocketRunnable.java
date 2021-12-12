@@ -27,7 +27,6 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.exit(1); // the outgoing socket does not work, proceed to close the program
         }
         // loop to read the request receive from the socket
         Gson gson = new Gson();
@@ -36,7 +35,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
             try {
                 requestString = socket.read();
             } catch (IOException e) {
-                System.err.println(getModuleName() + " - Likely the outgoing socket is closed");
+                System.err.println(getModuleName() + " - Likely the other-side socket is closed");
                 e.printStackTrace();
                 break;
             }
@@ -78,8 +77,8 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
         } catch (IOException e) {
             System.err.println(getModuleName() + " - Fatal error, cannot close the socket after socket to main branch is broken");
             e.printStackTrace();
-            System.exit(1);
         }
+        System.exit(1); // the outgoing socket does not work, proceed to close the program
     }
 
     /**

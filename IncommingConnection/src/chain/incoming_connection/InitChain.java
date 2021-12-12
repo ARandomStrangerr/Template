@@ -1,5 +1,6 @@
-package chain;
+package chain.incoming_connection;
 
+import chain.Chain;
 import memorable.IncomingConnectionMemorable;
 
 import java.net.InetAddress;
@@ -22,10 +23,6 @@ public final class InitChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-        chain.add(new InitLinkStartAndStoreListener(this));
-        chain.add(new InitLinkStartAndStoreOutgoingSocket(this));
-        chain.add(new InitLinkStartListenerThread(this));
-        chain.add(new InitLinkStartOutgoingSocketThread(this));
     }
 
     public int getListenerPort() {

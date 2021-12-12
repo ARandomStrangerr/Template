@@ -1,10 +1,11 @@
-package chain;
+package chain.incoming_connection;
 
+import chain.Link;
 import memorable.IncomingConnectionMemorable;
-import runnable.incoming_connection.HandleListenerRunnable;
+import runnable.ThreadStorage;
 
-public final class InitLinkStartListenerThread extends Link<InitChain> {
-    public InitLinkStartListenerThread(InitChain chain) {
+public class InitLinkInitiateAndStoreThreadStorage extends Link<InitChain> {
+    public InitLinkInitiateAndStoreThreadStorage(InitChain chain) {
         super(chain);
     }
 
@@ -16,7 +17,7 @@ public final class InitLinkStartListenerThread extends Link<InitChain> {
      */
     @Override
     protected boolean resolve() {
-        new Thread(new HandleListenerRunnable(IncomingConnectionMemorable.getListener())).start();
+        IncomingConnectionMemorable.setThreadStorage(new ThreadStorage());
         return true;
     }
 }

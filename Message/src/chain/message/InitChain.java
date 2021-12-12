@@ -7,8 +7,10 @@ import memorable.MemorableMessage;
 public final class InitChain extends Chain {
     private final int port;
 
-    public InitChain(int port) {
+    public InitChain(String moduleName,
+                     int port) {
         super(null);
+        MemorableMessage.setName(moduleName);
         this.port = port;
     }
 

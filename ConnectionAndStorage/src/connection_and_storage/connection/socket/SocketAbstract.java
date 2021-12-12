@@ -64,7 +64,7 @@ public abstract class SocketAbstract implements SocketInterface {
     @Override
     public String read() throws IOException {
         String read = br.readLine();
-        if(read == null) throw new IOException("Broken pipe. Probably the socket is closed");
+        if(read == null) throw new IOException("Broken pipe. Probably the other-side socket is closed");
         return read;
     }
 

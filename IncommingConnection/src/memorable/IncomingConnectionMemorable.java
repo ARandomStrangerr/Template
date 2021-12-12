@@ -2,12 +2,14 @@ package memorable;
 
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
+import runnable.ThreadStorage;
 
 public class IncomingConnectionMemorable {
     private static Listener<PlainSocket> listener;
     private static PlainSocket outgoingSocket;
     private static String name;
     private static int hashCode;
+    private static ThreadStorage threadStorage;
 
     public static Listener<PlainSocket> getListener() {
         return listener;
@@ -39,5 +41,13 @@ public class IncomingConnectionMemorable {
 
     public static void setHashCode(int hashCode) {
         IncomingConnectionMemorable.hashCode = hashCode;
+    }
+
+    public static void setThreadStorage(ThreadStorage threadStorage){
+        IncomingConnectionMemorable.threadStorage = threadStorage;
+    }
+
+    public static ThreadStorage getThreadStorage() {
+        return threadStorage;
     }
 }

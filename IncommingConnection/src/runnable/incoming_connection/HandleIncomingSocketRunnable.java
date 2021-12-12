@@ -4,11 +4,15 @@ import chain.Chain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
 import connection_and_storage.connection.socket.PlainSocket;
-import memorable.IncomingConnectionMemorable;
 
 public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketRunnable<PlainSocket> {
     public HandleIncomingSocketRunnable(Listener<PlainSocket> listener, PlainSocket socket) {
         super(listener, socket);
+    }
+
+    @Override
+    public void run() {
+
     }
 
     /**
@@ -58,6 +62,6 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
 
     @Override
     protected String getName() {
-        return IncomingConnectionMemorable.getName();
+        return null;
     }
 }
