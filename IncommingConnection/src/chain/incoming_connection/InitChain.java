@@ -23,6 +23,10 @@ public final class InitChain extends Chain {
 
     @Override
     protected void chainConstruction() {
+        super.chain.add(new InitLinkStartAndStoreListener(this));
+        super.chain.add(new InitLinkStartThreadForListener(this));
+        super.chain.add(new InitLinkStartAndStoreOutgoingSocket(this));
+        super.chain.add(new InitLinkStartThreadForOutgoingSocket(this));
     }
 
     public int getListenerPort() {

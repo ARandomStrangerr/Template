@@ -9,8 +9,8 @@ import connection_and_storage.connection.socket.SocketInterface;
 import java.io.IOException;
 
 public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> implements Runnable {
-    private final T socket;
-    private final ThreadStorage storage;
+    protected final T socket;
+    protected final ThreadStorage storage;
 
     public HandleOutgoingSocketRunnable(T socket) {
         this.socket = socket;
@@ -26,6 +26,7 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                System.exit(1);
             }
         }
         // loop to read the request receive from the socket

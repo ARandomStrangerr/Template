@@ -75,7 +75,7 @@ public abstract class SocketAbstract implements SocketInterface {
      * @throws IOException when the data cannot be written
      */
     @Override
-    public void write(String data) throws IOException {
+    public synchronized void write(String data) throws IOException {
         bw.write(data);
         bw.newLine();
         bw.flush();

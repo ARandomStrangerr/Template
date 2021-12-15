@@ -4,6 +4,7 @@ import connection_and_storage.connection.socket.SocketInterface;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class SingleStorage<T extends SocketInterface> implements StorageInterface<T> {
@@ -21,7 +22,7 @@ public class SingleStorage<T extends SocketInterface> implements StorageInterfac
     @Override
     public T get(String key)
             throws NoSuchElementException {
-        if (storageStructure.contains(key))
+        if (storageStructure.containsKey(key))
             return storageStructure.get(key);
         throw new NoSuchElementException("No such key matched with the given key");
     }

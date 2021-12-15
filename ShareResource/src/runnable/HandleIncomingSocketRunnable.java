@@ -9,8 +9,8 @@ import connection_and_storage.connection.socket.SocketInterface;
 import java.io.IOException;
 
 public abstract class HandleIncomingSocketRunnable<T extends SocketInterface> implements Runnable {
-    private final T socket;
-    private final Listener<T> listener;
+    protected final T socket;
+    protected final Listener<T> listener;
 
     public HandleIncomingSocketRunnable(Listener<T> listener,
                                         T socket) {

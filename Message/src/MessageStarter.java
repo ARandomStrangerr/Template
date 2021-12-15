@@ -65,7 +65,7 @@ class Class2 {
         Socket socket = new Socket(InetAddress.getByName("localhost"), 1998);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        bw.write("Module2");
+        bw.write("TestModule");
         bw.newLine();
         bw.flush();
         int assignedId = Integer.parseInt(br.readLine());
@@ -75,7 +75,8 @@ class Class2 {
 
         Gson gson = new Gson();
         JsonObject jsonInput = gson.fromJson(input, JsonObject.class);
-        jsonInput.addProperty("prop2", "prop2");
+        jsonInput.get("body").getAsJsonObject().addProperty("prop2", "prop2");
+
         bw.write(jsonInput.toString());
         bw.newLine();
         bw.flush();
