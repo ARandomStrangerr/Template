@@ -10,11 +10,12 @@ import java.io.IOException;
 
 public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> implements Runnable {
     protected final T socket;
-    protected final ThreadStorage storage;
+    private final ThreadStorage storage;
 
-    public HandleOutgoingSocketRunnable(T socket) {
+    public HandleOutgoingSocketRunnable(T socket,
+                                        ThreadStorage storage) {
         this.socket = socket;
-        this.storage = new ThreadStorage();
+        this.storage = storage;
     }
 
     @Override
@@ -117,8 +118,4 @@ public abstract class HandleOutgoingSocketRunnable<T extends SocketInterface> im
     protected abstract Chain getRejectChain(JsonObject request);
 
     protected abstract String getModuleName();
-
-    public void onHold(int identifier, LinkObserver link){
-        storage.put(identifier, link);
-    }
 }

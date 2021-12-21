@@ -12,28 +12,29 @@ import java.io.IOException;
 // todo later on upgrade this to ssh socket
 public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketRunnable<PlainSocket> {
     public HandleOutgoingSocketRunnable(PlainSocket socket) {
-        super(socket);
+        super(socket,
+                IncomingConnectionMemorable.getThreadStorage());
     }
 
     @Override
-    public void run(){
+    public void run() {
         // declare the name of this module to connect to the main module
-        if (!verification(super.socket)){
+        if (!verification(super.socket)) {
             System.err.println(getModuleName() + " - Cannot verify the outgoing socket");
             try {
                 socket.close();
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             System.exit(1);
         }
 
         Gson gson = new Gson();
-        while (true){
+        while (true) {
             String requestString;
             try {
                 requestString = socket.read();
-            } catch (IOException e){
+            } catch (IOException e) {
                 System.err.println(getModuleName() + " - Likely the other-side socket is closed");
                 e.printStackTrace();
                 break;
@@ -42,21 +43,34 @@ public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketR
                 JsonObject requestObject = gson.fromJson(requestString, JsonObject.class);
                 if (
                         requestObject
-                        .get("header")
-                        .getAsJsonObject()
-                        .has("clientIdentity")
+                                .get("header")
+                                .getAsJsonObject()
+                                .has("clientIdentity")
                 ) {
+                    // case where send body to client
                     getProcessChain(requestObject).resolve();
                 } else if (
                         requestObject
-                        .get("header")
-                        .getAsJsonObject()
-                        .has("threadCode")
+                                .get("header")
+                                .getAsJsonObject()
+                                .has("threadCode")
                 ) {
-                    System.err.println("Not supported yet");
+                    // case where the return body is necessity to run notify a thread
+                    try {
+                        IncomingConnectionMemorable.getThreadStorage().get(
+                                requestObject
+                                        .get("header")
+                                        .getAsJsonObject()
+                                        .get("threadCode")
+                                        .getAsInt()
+                        ).synchronizedNotify(requestObject);
+                    } catch (InterruptedException e){
+                        System.err.println(IncomingConnectionMemorable.getName() + " - Cannot resume old thread");
+                        e.printStackTrace();
+                    }
                 }
             };
-            new Thread (runnable).start();
+            new Thread(runnable).start();
         }
         try {
             socket.close();
@@ -77,21 +91,21 @@ public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketR
     @Override
     public boolean verification(PlainSocket socket) {
 
-        try{
+        try {
             socket.write(IncomingConnectionMemorable.getName());
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println(getModuleName() + " - Cannot write declare the name of this module to the message module");
             e.printStackTrace();
             return false;
         }
 
-        try{
+        try {
             IncomingConnectionMemorable.setHashCode(Integer.parseInt(socket.read()));
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println(getModuleName() + " - Cannot read the hashcode of this module from the message module");
             e.printStackTrace();
             return false;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.err.println(getModuleName() + " - Cannot convert the data from message module to number");
             e.printStackTrace();
             return false;

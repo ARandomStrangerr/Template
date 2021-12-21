@@ -18,4 +18,8 @@ public class ThreadStorage {
     public LinkObserver get(int identifier){
         return storageStructure.get(identifier);
     }
+
+    public void remove(int identifier){
+        storageStructure.remove(identifier);
+    }
 }

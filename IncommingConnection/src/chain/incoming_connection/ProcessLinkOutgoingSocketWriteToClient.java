@@ -34,7 +34,7 @@ public class ProcessLinkOutgoingSocketWriteToClient extends Link<ProcessChainOut
                                     .toString()
                     );
         } catch (IOException e) {
-            System.err.println(IncomingConnectionMemorable.getName() + " - Cannot write to the client");
+            System.err.println(IncomingConnectionMemorable.getName() + " - probably the client is closed");
             e.printStackTrace();
             chain.getProcessObject()
                     .get("header")

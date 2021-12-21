@@ -1,6 +1,7 @@
 package runnable.incoming_connection;
 
 import chain.Chain;
+import chain.incoming_connection.ProcessChainIncomingSocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.listener.Listener;
@@ -25,7 +26,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
             try {
                 socket.write("{response:\"Không thể đọc dữ liệu gửi đến\"}");
                 socket.close();
-            }catch (IOException e1){
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
             return;
@@ -35,39 +36,56 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
         Gson gson = new Gson();
         try {
             inputObject = gson.fromJson(inputMsg, JsonObject.class);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.err.println(getName() + " - not incorrect Json format");
             e.printStackTrace();
             try {
                 socket.write("{response:\"Định dạng dữ liệu được gởi đến không chính xác\"}");
                 socket.close();
-            } catch (IOException e1){
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
             return;
         }
 
-        //todo: add authentication at this step after the demo stabilize
+//        Thread.currentThread().setName();
+        getProcessChain(inputObject).resolve();
 
-        socket.setKey(inputObject.remove("id").getAsString());
-        JsonObject header = new JsonObject();
-        header.addProperty("from", getName());
-        header.add("to", inputObject.remove("job"));
-        header.addProperty("hashCode", IncomingConnectionMemorable.getHashCode());
-        header.addProperty("clientIdentity", socket.getKey());
-        header.addProperty("status", true);
-        JsonObject outputObject = new JsonObject();
-        outputObject.add("header", header);
-        outputObject.add("body", inputObject);
-
-//        System.out.println(outputObject);
-        try {
-            IncomingConnectionMemorable.getOutgoingSocket().write(outputObject.toString());
-        }catch (IOException e){
-            System.err.println(getName() + " - Cannot write the messsage to ");
+        if (inputObject.get("header")
+                .getAsJsonObject()
+                .get("status")
+                .getAsBoolean()
+        ) {
+            try {
+                IncomingConnectionMemorable.getOutgoingSocket().write(inputObject.toString());
+            } catch (IOException e) {
+                System.err.println("Cannot write to the message module");
+                e.printStackTrace();
+                try {
+                    socket.close();
+                } catch (IOException e1){
+                    e1.printStackTrace();
+                }
+                return;
+            }
+            listener.put(inputObject.get("header")
+                            .getAsJsonObject()
+                            .get("clientIdentity")
+                            .getAsString(),
+                    socket);
+            socket.setKey(inputObject.get("header")
+                    .getAsJsonObject()
+                    .get("clientIdentity")
+                    .getAsString()
+            );
+        } else {
+            try {
+                socket.write(inputObject.get("body").getAsJsonObject().toString());
+            } catch (IOException e){
+                System.err.println("Cannot write back to the socket which the message came from");
+                e.printStackTrace();
+            }
         }
-
-        IncomingConnectionMemorable.getListener().put(socket.getKey(), socket);
     }
 
     /**
@@ -90,7 +108,7 @@ public class HandleIncomingSocketRunnable extends runnable.HandleIncomingSocketR
      */
     @Override
     protected Chain getProcessChain(JsonObject request) {
-        return null;
+        return new ProcessChainIncomingSocket(request);
     }
 
     /**

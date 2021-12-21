@@ -24,7 +24,7 @@ class Main1 {
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-        bw.write("{job:[\"TestModule\"], id:\"identification\", data:\"hello\"}");
+        bw.write("{job:\"Authentication\", id:\"habcd\", data:\"hello\"}");
         bw.newLine();
         bw.flush();
 

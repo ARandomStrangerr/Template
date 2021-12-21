@@ -1,10 +1,10 @@
-package runnable.viettel_invoice_get;
+package runnable.authentication;
 
 import chain.Chain;
-import chain.viettel_invoice_get.ProcessChain;
+import chain.authentication.ProcessChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.socket.PlainSocket;
-import memorable.ViettelInvoiceGetMemorable;
+import memorable.AuthenticationMemorable;
 
 import java.io.IOException;
 
@@ -19,34 +19,29 @@ public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketR
      *
      * @param socket socket which we are operating on
      * @return <code>True</code> when successfully verify
-     * <code>false</code> when unsuccessfully verif
+     * <code>false</code> when unsuccessfully verify
      */
     @Override
     public boolean verification(PlainSocket socket) {
         try {
-            socket.write(ViettelInvoiceGetMemorable.getName());
+            socket.write(AuthenticationMemorable.getName());
         } catch (IOException e) {
-            System.err.println("Cannot write the name into socket");
+            System.err.println(AuthenticationMemorable.getName() + " - cannot set name of the data module");
             e.printStackTrace();
             return false;
         }
         try {
-            ViettelInvoiceGetMemorable.setHashCode(Integer.parseInt(socket.read()));
+            AuthenticationMemorable.setHashCode(Integer.parseInt(socket.read()));
         } catch (IOException e) {
-            System.err.println("Cannot read the hash code from the message module");
+            System.err.println(AuthenticationMemorable.getName() + " - cannot read hashcode from the message module");
             e.printStackTrace();
             return false;
         } catch (NumberFormatException e) {
-            System.err.println("The send back id number is in correct");
+            System.err.println(AuthenticationMemorable.getName() + " - cannot convert the send back hashcode to number");
             e.printStackTrace();
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected String getModuleName() {
-        return ViettelInvoiceGetMemorable.getName();
     }
 
     /**
@@ -80,5 +75,10 @@ public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketR
     @Override
     protected Chain getRejectChain(JsonObject request) {
         return null;
+    }
+
+    @Override
+    protected String getModuleName() {
+        return AuthenticationMemorable.getName();
     }
 }

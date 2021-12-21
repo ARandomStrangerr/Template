@@ -1,0 +1,1 @@
+3C:7C:3F:2A:07:61=Authentication,ViettelInvoiceGet

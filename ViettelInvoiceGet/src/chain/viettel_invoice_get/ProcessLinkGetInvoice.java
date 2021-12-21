@@ -99,7 +99,7 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
                 e.printStackTrace();
                 return false;
             }
-
+            // open writer
             BufferedWriter bw;
             try {
                 bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
@@ -110,7 +110,7 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
                 e.printStackTrace();
                 return false;
             }
-
+            // write to stream
             try {
                 bw.write(sendObject.toString());
                 bw.newLine();
@@ -122,7 +122,7 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
                 e.printStackTrace();
                 return false;
             }
-
+            // open reader
             BufferedReader br;
             try {
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -133,18 +133,18 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
                 e.printStackTrace();
                 return false;
             }
+            // read from reader and convert into json object
             JsonObject jsonInput;
             try {
                 jsonInput = gson.fromJson(br.readLine(), JsonObject.class);
             } catch (IOException e) {
-
                 chain.getProcessObject().get("body").getAsJsonObject()
                         .addProperty("response", "Không kết nối được với máy chủ Viettel");
                 System.err.println("Cannot read from viettel server ");
                 e.printStackTrace();
                 return false;
             }
-
+            // close reader , writer and https request
             try {
                 bw.close();
                 br.close();
@@ -152,7 +152,7 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
                 System.err.println("Cannot close connection");
             }
             con.disconnect();
-
+            // write the received data into socket
             JsonObject jsonOutput = new JsonObject();
             jsonOutput.add("header", chain.getProcessObject().get("header"));
             JsonObject bodyOutput = new JsonObject();

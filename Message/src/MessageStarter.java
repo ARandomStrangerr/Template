@@ -15,51 +15,6 @@ public class MessageStarter {
     }
 }
 
-class Class1 {
-    public static void main(String[] args) throws Exception {
-        Socket socket = new Socket(InetAddress.getByName("localhost"), 1998);
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        bw.write("Module1");
-        bw.newLine();
-        bw.flush();
-        int assignedId = Integer.parseInt(br.readLine());
-        JsonObject jsonObject = new JsonObject(),
-                headerObject = new JsonObject(),
-                bodyObject = new JsonObject();
-
-        JsonArray toObject = new JsonArray();
-        toObject.add("ViettelInvoiceGet");
-        headerObject.addProperty("from", "Module1");
-        headerObject.addProperty("hashCode", assignedId);
-        headerObject.add("to", toObject);
-        headerObject.addProperty("status", true);
-
-        bodyObject.addProperty("username", "0101954482");
-        bodyObject.addProperty("password", "123456aA@");
-        bodyObject.addProperty("templateCode", "01GTKT0/001");
-        bodyObject.addProperty("invoiceSeries", "KT/20E");
-        bodyObject.addProperty("start", 31986);
-        bodyObject.addProperty("end", 70642);
-
-        jsonObject.add("header", headerObject);
-        jsonObject.add("body", bodyObject);
-
-        bw.write(jsonObject.toString());
-        bw.newLine();
-        bw.flush();
-
-        Gson gson = new Gson();
-        for (String line = br.readLine(); line != null; line = br.readLine()) {
-            JsonObject inputObject = gson.fromJson(line, JsonObject.class);
-            File file = new File("/home/thanhdo/test/" + inputObject.get("body").getAsJsonObject().get("name").getAsString() + ".pdf");
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(Base64.getDecoder().decode(inputObject.get("body").getAsJsonObject().get("file").getAsString().getBytes(StandardCharsets.UTF_8)));
-            fos.close();
-        }
-    }
-}
-
 class Class2 {
     public static void main(String[] args) throws Exception {
         Socket socket = new Socket(InetAddress.getByName("localhost"), 1998);
@@ -80,6 +35,5 @@ class Class2 {
         bw.write(jsonInput.toString());
         bw.newLine();
         bw.flush();
-        Thread.sleep(1000000);
     }
 }

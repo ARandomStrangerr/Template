@@ -25,7 +25,8 @@ public class ProcessLinkOutgoingSocketCloseSocket extends Link<ProcessChainOutgo
                 .get("status")
                 .getAsBoolean()
         ) {
-            PlainSocket socket = IncomingConnectionMemorable.getListener()
+            PlainSocket socket = IncomingConnectionMemorable
+                    .getListener()
                     .get(
                             chain.getProcessObject().get("header")
                             .getAsJsonObject()
