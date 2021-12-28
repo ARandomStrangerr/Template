@@ -2,6 +2,7 @@ package runnable.viettel_invoice_get;
 
 import chain.Chain;
 import chain.viettel_invoice_get.ProcessChain;
+import chain.viettel_invoice_get.ResolveChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.socket.PlainSocket;
 import memorable.ViettelInvoiceGetMemorable;
@@ -68,7 +69,7 @@ public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketR
      */
     @Override
     protected Chain getResolveChain(JsonObject request) {
-        return null;
+        return new ResolveChain(request);
     }
 
     /**
