@@ -25,6 +25,7 @@ public class ProcessLinkGetInvoice extends Link<ProcessChain> {
      */
     @Override
     protected boolean resolve() {
+        // create
         String username, password;
         try {
             username = chain.getProcessObject().get("body").getAsJsonObject()
