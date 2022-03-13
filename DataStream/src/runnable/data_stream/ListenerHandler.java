@@ -36,9 +36,15 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 System.err.println("Cannot read the name of the socket");
                 return false;
             }
+            //write back the id of the socket
+            try {
+                socket.write(String.valueOf(socket.hashCode()));
+            } catch (IOException e) {
+                System.err.println("Cannot write the id back to the socket");
+                return false;
+            }
             //store the socket into collection
             listener.putSocket(socket.getName(), socket);
-            System.out.printf("A socket just connected %s - %d\n", socket.getName(), socket.hashCode());
             return true;
         };
     }
