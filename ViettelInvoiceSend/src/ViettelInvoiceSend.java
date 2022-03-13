@@ -6,7 +6,7 @@ public class ViettelInvoiceSend {
     public static void main(String[] args) throws Exception {
         new InitChain("ViettelInvoiceSend",
                 InetAddress.getByName("localhost"),
-                1998)
+                9999)
                 .resolve();
     }
 }

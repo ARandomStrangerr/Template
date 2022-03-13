@@ -7,12 +7,14 @@ import chain.viettel_invoice_send.ResolveChain;
 import com.google.gson.JsonObject;
 import connection_and_storage.connection.socket.PlainSocket;
 import memorable.MemorableViettelInvoiceSend;
+import runnable.ThreadStorage;
 
 import java.io.IOException;
 
 public class HandleOutgoingSocketRunnable extends runnable.HandleOutgoingSocketRunnable<PlainSocket> {
     public HandleOutgoingSocketRunnable(PlainSocket socket) {
-        super(socket);
+        super(socket,
+        new ThreadStorage());
     }
 
     @Override
