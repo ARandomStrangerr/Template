@@ -41,7 +41,7 @@ class OneToManyStorage implements StorageInterface {
             if (entry.getValue().getActiveRequest() == 0) return entry.getValue();
             else if (socket == null) {
                 socket = entry.getValue();
-            } else if (socket != null) {
+            } else {
                 if (entry.getValue().getActiveRequest() < socket.getActiveRequest()) {
                     socket = entry.getValue();
                 }
@@ -86,6 +86,7 @@ class OneToManyStorage implements StorageInterface {
         ConcurrentHashMap<Integer, Socket> group = storageStructure.get(key);
         if (group == null) group = new ConcurrentHashMap<>();
         group.put(socket.hashCode(), socket);
+        storageStructure.put(key, group);
     }
 
     /**
