@@ -23,6 +23,7 @@ public abstract class SocketHandler implements Runnable {
                 System.err.println("Cannot read message from socket with hashcode " + socket.hashCode());
                 break;
             }
+            if (receivedPacket == null) break; // socket will send NULL when the other side of the connection is closed
             Runnable runnable;
             runnable = () -> { // each incoming packet will be handled by a thread
                 Gson gson;
@@ -30,11 +31,12 @@ public abstract class SocketHandler implements Runnable {
                 JsonObject json = gson.fromJson(receivedPacket, JsonObject.class); // convert package to json format
                 // codes that definitely will do before executing variable chain of commands goes here
                 try {
-                    if (json.get("header").getAsJsonObject().get("decrease").getAsBoolean()) {
+                    boolean isDecrease = json.get("header").getAsJsonObject().remove("decrease").getAsBoolean();
+                    if (isDecrease) {
                         socket.decreaseActiveRequest();
                     }
                 } catch (Exception e) {
-                    System.err.printf("package from %s - %d does not contains decrease attribute, should have it", socket.getName(), socket.hashCode());
+                    System.err.printf("package from %s - %d does not contains decrease attribute, should have it\n", socket.getName(), socket.hashCode());
                 }
                 // access resolve chain of command
                 boolean isResolve = getResolveChain(json).resolve(); // resolve the request
