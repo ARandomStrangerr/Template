@@ -33,7 +33,7 @@ public class SendPackage extends Link<ResolveChain> {
             socket = DataStream.getInstance().listener.getSocket(to.remove(0).getAsString());
         }
         try {
-            socket.write(chain.getProcessObject().getAsString());
+            socket.write(chain.getProcessObject().toString());
         } catch (IOException e){
             System.err.println("Cannot send package to indicated socket");
             e.printStackTrace();
