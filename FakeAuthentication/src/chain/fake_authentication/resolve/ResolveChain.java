@@ -10,6 +10,7 @@ public class ResolveChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-
+        super.chain.add(new LinkCheckPrivilege(this));
+        super.chain.add(new LinkCheckPrivilege(this));
     }
 }
