@@ -2,7 +2,7 @@ package chain.data_stream.init_module;
 
 import chain.Link;
 import memorable.DataStream;
-import runnable.data_stream.ListenerHandler;
+import runnable.data_stream.HostListenerHandler;
 import socket.Listener;
 import socket.StorageType;
 
@@ -29,7 +29,7 @@ class LinkStartListener extends Link<InitChain> {
             return false;
         }
         DataStream.getInstance().listener = listener;
-        ListenerHandler listenerRunnable = new ListenerHandler(listener, chain.timeout);
+        HostListenerHandler listenerRunnable = new HostListenerHandler(listener, chain.timeout);
         System.out.println("Listener is opened");
         new Thread(listenerRunnable).start();
         return true;

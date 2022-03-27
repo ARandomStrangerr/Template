@@ -1,4 +1,4 @@
-package chain.viettel_invoice_get;
+package chain.fake_authentication.resolve;
 
 import chain.Chain;
 import com.google.gson.JsonObject;
@@ -10,7 +10,6 @@ public class ResolveChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-        chain.add(new ResolveLinkMakeReturnMessage(this));
-        chain.add(new LinkSendToMessageModule(this));
+
     }
 }

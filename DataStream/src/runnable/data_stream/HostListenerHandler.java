@@ -4,15 +4,15 @@ import chain.Chain;
 import chain.data_stream.reject.RejectChain;
 import chain.data_stream.resolve.ResolveChain;
 import com.google.gson.JsonObject;
-import runnable.SocketHandler;
+import runnable.HostSocketHandler;
 import socket.Listener;
 import socket.Socket;
 import socket.SocketVerification;
 
 import java.io.IOException;
 
-public class ListenerHandler extends runnable.ListenerHandler {
-    public ListenerHandler(Listener listener, int millisecond) {
+public class HostListenerHandler extends runnable.ListenerHandler {
+    public HostListenerHandler(Listener listener, int millisecond) {
         super(listener, millisecond);
     }
 
@@ -56,8 +56,8 @@ public class ListenerHandler extends runnable.ListenerHandler {
      * @return an object that do the controlling the read / write / action of a socket
      */
     @Override
-    protected SocketHandler getSocketHandler(Socket socket) {
-        return new SocketHandler(socket) {
+    protected HostSocketHandler getSocketHandler(Socket socket) {
+        return new HostSocketHandler(socket) {
             @Override
             public Chain getResolveChain(JsonObject receivedObject) {
                 return new ResolveChain(receivedObject);

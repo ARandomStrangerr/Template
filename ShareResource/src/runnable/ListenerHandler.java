@@ -50,7 +50,7 @@ public abstract class ListenerHandler implements Runnable {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    System.out.printf("Module connected to the network %S - %d\n", socket.getName(), socket.hashCode());
+                    System.out.printf("Module connected to the network %s - %d\n", socket.getName(), socket.hashCode());
                     getSocketHandler(socket).run(); // run the socket handler to put it into infinity while loop to read and write
                 }
                 // either the verification fail or the socket initiate close
@@ -92,5 +92,5 @@ public abstract class ListenerHandler implements Runnable {
      * @param socket socket that connect with the client side
      * @return an object that do the controlling the read / write / action of a socket
      */
-    protected abstract SocketHandler getSocketHandler(Socket socket);
+    protected abstract HostSocketHandler getSocketHandler(Socket socket);
 }

@@ -7,10 +7,10 @@ import socket.Socket;
 
 import java.io.IOException;
 
-public abstract class SocketHandler implements Runnable {
+public abstract class HostSocketHandler implements Runnable {
     private final Socket socket;
 
-    public SocketHandler(Socket socket) {
+    public HostSocketHandler(Socket socket) {
         this.socket = socket;
     }
 
