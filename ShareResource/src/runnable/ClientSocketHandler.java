@@ -62,7 +62,10 @@ public abstract class ClientSocketHandler implements Runnable {
                 Gson gson = new Gson(); // new json due to different thread, need separate variable, avoid data of one thread mushing with another
                 JsonObject processObject = gson.fromJson(receivedPacket, JsonObject.class); // converting package from String to json format
                 boolean isResolved = getResolveChain(processObject).resolve();
-                if (!isResolved) getRejectChain(processObject).resolve();
+                if (!isResolved) { // if the chain is not resolved
+                    processObject.get("header").getAsJsonObject().addProperty("status" , false); // set status to false
+                    getRejectChain(processObject).resolve();
+                }
             };
             new Thread(resolveRequestRunnable).start();
         }
