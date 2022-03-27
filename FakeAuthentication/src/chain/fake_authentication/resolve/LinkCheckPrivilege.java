@@ -8,8 +8,8 @@ import memorable.FakeAuthentication;
 
 import java.util.HashSet;
 
-public class LinkCheckPrivilege extends Link<ResolveChain> {
-    public LinkCheckPrivilege(ResolveChain chain) {
+ class LinkCheckPrivilege extends Link<ResolveChain> {
+     LinkCheckPrivilege(ResolveChain chain) {
         super(chain);
     }
 
