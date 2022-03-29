@@ -38,32 +38,40 @@ public abstract class ListenerHandler implements Runnable {
                 break;
             }
             Runnable runnable = () -> { // each accepted sockets will be handled by a thread
+                // set the timer
                 try {
                     socket.setTimeout(millisecond);
                 } catch (IOException e) {
                     System.err.println("Cannot set timeout");
                     e.printStackTrace();
                 }
-                if (getSocketVerification(socket, this.listener).run()) { // do the verification steps like getting socket name, store the socket
-                    try { // remove the timeout of the socket
+                // do the verification steps like getting socket name, store the socket
+                if (getSocketVerification(socket, this.listener).run()) { // if the verification is a success
+                    // remove the timeout of the socket
+                    try {
                         socket.setTimeout(0);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    // notify the system that a socket is successfully established
                     System.out.printf("Module connected to the network %s - %d\n", socket.getName(), socket.hashCode());
-                    getSocketHandler(socket).run(); // run the socket handler to put it into infinity while loop to read and write
+                    // run the socket handler to put it into infinity while loop to read and write
+                    getSocketHandler(socket).run();
                 }
-                // either the verification fail or the socket initiate close
-                try { // close the socket to prevent memory leak
+                // either the verification fail or the read loop is complete
+                // close the socket to prevent memory leak
+                try {
                     socket.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try { // remove the socket out from the listener collection
+                // remove the socket out from the listener collection
+                try {
                     listener.removeSocket(socket);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                // notify the system that a socket is logged out
                 System.out.printf("Module disconnected from the network %S - %d\n", socket.getName(), socket.hashCode());
             };
             new Thread(runnable).start();
