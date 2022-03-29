@@ -6,7 +6,10 @@ import com.google.gson.JsonObject;
 import socket.Socket;
 
 import java.io.IOException;
-
+/*
+normally, an instance of this class will not be spawned.
+just lambda it from ListenerHandler
+ */
 public abstract class HostSocketHandler implements Runnable {
     private final Socket socket;
 

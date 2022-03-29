@@ -11,8 +11,8 @@ import socket.SocketVerification;
 
 import java.io.IOException;
 
-public class HostListenerHandler extends runnable.ListenerHandler {
-    public HostListenerHandler(Listener listener, int millisecond) {
+public class ListenerHandler extends runnable.ListenerHandler {
+    public ListenerHandler(Listener listener, int millisecond) {
         super(listener, millisecond);
     }
 
