@@ -48,6 +48,7 @@ public abstract class ClientSocketHandler implements Runnable {
         }
         // repeated loop to read / process data from DataStream
         while (true) {
+            // read from socket
             String receivedPacket;
             try { // read from the socket
                 receivedPacket = socket.read();
@@ -56,7 +57,9 @@ public abstract class ClientSocketHandler implements Runnable {
                 e.printStackTrace();
                 break;
             }
-            if (receivedPacket == null) break; // case when the host socket is already closed
+            // if the data read from socket is null, then the socket is closed
+            if (receivedPacket == null) break;
+            // create a runnable to handle message just closed from the socket
             Runnable resolveRequestRunnable;
             resolveRequestRunnable = () -> { // declare new runnable to process request as a sub-thread
                 Gson gson = new Gson(); // new json due to different thread, need separate variable, avoid data of one thread mushing with another
@@ -67,6 +70,7 @@ public abstract class ClientSocketHandler implements Runnable {
                     getRejectChain(processObject).resolve();
                 }
             };
+            // start the runnable
             new Thread(resolveRequestRunnable).start();
         }
         try {

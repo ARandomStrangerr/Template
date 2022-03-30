@@ -55,7 +55,7 @@ public abstract class ListenerHandler implements Runnable {
                     }
                     // notify the system that a socket is successfully established
                     System.out.printf("Module connected to the network %s - %d\n", socket.getName(), socket.hashCode());
-                    // run the socket handler to put it into infinity while loop to read and write
+                    // run the socket handler to put it into infinity while loop to read and write (not spawning a thread, it is a continuance of this one)
                     getSocketHandler(socket).run();
                 }
                 // either the verification fail or the read loop is complete
