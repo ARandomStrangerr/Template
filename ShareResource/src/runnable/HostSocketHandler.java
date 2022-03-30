@@ -1,14 +1,13 @@
 package runnable;
 
 import chain.Chain;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import socket.Socket;
 
-import java.io.IOException;
-/*
-normally, an instance of this class will not be spawned.
-just lambda it from ListenerHandler
+
+/**
+ * this class designed to be created as inline class.
+ * that will ensure the access to the private member socket.
  */
 public abstract class HostSocketHandler implements Runnable {
     private final Socket socket;
@@ -17,37 +16,7 @@ public abstract class HostSocketHandler implements Runnable {
         this.socket = socket;
     }
 
-    public void run() {
-        while (true) { // while true loop to read message from socket
-            String receivedPacket;
-            try {
-                receivedPacket = socket.read(); // read message from socket
-            } catch (IOException e) {
-                System.err.println("Cannot read message from socket with hashcode " + socket.hashCode());
-                break;
-            }
-            if (receivedPacket == null) break; // socket will send NULL when the other side of the connection is closed
-            Runnable runnable;
-            runnable = () -> { // each incoming packet will be handled by a thread
-                Gson gson;
-                gson = new Gson();
-                JsonObject json = gson.fromJson(receivedPacket, JsonObject.class); // convert package to json format
-                // codes that definitely will do before executing variable chain of commands goes here
-                try {
-                    boolean isDecrease = json.get("header").getAsJsonObject().remove("decrease").getAsBoolean();
-                    if (isDecrease) {
-                        socket.decreaseActiveRequest();
-                    }
-                } catch (Exception e) {
-                    System.err.printf("package from %s - %d does not contains decrease attribute, should have it\n", socket.getName(), socket.hashCode());
-                }
-                // access resolve chain of command
-                boolean isResolve = getResolveChain(json).resolve(); // resolve the request
-                if (!isResolve) getRejectChain(json).resolve(); // if fail to resolve
-            };
-            new Thread(runnable).start(); // start the runnable to handler the request
-        }
-    }
+    public abstract void run();
 
     /**
      * @return process do to when the process chain is successfully complete
