@@ -1,7 +1,10 @@
 package memorable;
 
+import chain.LinkWait;
 import socket.Listener;
 import socket.Socket;
+
+import java.util.Hashtable;
 
 public class IncomingConnection {
     private static IncomingConnection cache;
@@ -14,6 +17,8 @@ public class IncomingConnection {
     private Listener listener;
     private Socket socket;
     private int id;
+    private String name;
+    private Hashtable<Integer, LinkWait> threadTable;
 
     private IncomingConnection() {
     }
@@ -40,5 +45,21 @@ public class IncomingConnection {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Hashtable<Integer, LinkWait> getThreadTable() {
+        return threadTable;
+    }
+
+    public void setThreadTable(Hashtable<Integer, LinkWait> threadTable) {
+        this.threadTable = threadTable;
     }
 }
