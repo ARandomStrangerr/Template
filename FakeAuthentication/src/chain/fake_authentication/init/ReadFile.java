@@ -40,6 +40,7 @@ public class ReadFile extends Link<InitChain> {
                 privilegeTable.put(macAndPrivilege[0], privilegeSet);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
         FakeAuthentication.getInstance().setPrivilegeTable(privilegeTable);
