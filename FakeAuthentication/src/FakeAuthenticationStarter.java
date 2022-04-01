@@ -7,7 +7,7 @@ public class FakeAuthenticationStarter {
         new InitChain(InetAddress.getByName("localhost"),
                 9999,
                 "FakeAuthentication",
-                "authentication.txt")
+                "authenticate.txt")
                 .resolve();
     }
 }
