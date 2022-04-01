@@ -1,6 +1,7 @@
 package runnable.data_stream;
 
 import chain.Chain;
+import chain.incoming_connection.resolve.client_socket.ResolveChain;
 import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
 import socket.Socket;
@@ -28,7 +29,7 @@ public class ClientSocketHandler extends runnable.ClientSocketHandler {
      */
     @Override
     protected Chain getResolveChain(JsonObject processObject) {
-        return null;
+        return new ResolveChain(processObject);
     }
 
     /**
