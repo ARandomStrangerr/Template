@@ -32,7 +32,7 @@ class LinkStartListener extends Link<InitChain> {
         // store listener
         IncomingConnection.getInstance().setListener(listener);
         // start thread to handle listener
-        new Thread(new ListenerHandler(listener, chain.initialDisconnectTime));
+        new Thread(new ListenerHandler(listener, chain.initialDisconnectTime)).start();
         return true;
     }
 }

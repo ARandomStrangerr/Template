@@ -31,7 +31,7 @@ class LinkStartSocket extends Link<InitChain> {
         // store the socket
         IncomingConnection.getInstance().setSocket(socket);
         // start thread to handle socket
-        new Thread(new ClientSocketHandler(socket, IncomingConnection.getInstance().getName()));
+        new Thread(new ClientSocketHandler(socket, IncomingConnection.getInstance().getName())).start();
         return true;
     }
 }
