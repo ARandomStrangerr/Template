@@ -3,6 +3,7 @@
         from: < String::service_name >
         instance: < int::service_id_instance >
         thread: < int::thread_id >
+        clientId: < String::mac_address >
         to: [ String::services_name ]
         status: < true / false >
         decrease: < true / false >
@@ -17,6 +18,8 @@ HEADER - contains necessary information for message flowing within the system.
     THREAD:
         unique identification of the thread which is paused to make this request
         this id aids when the package is completed its chain then return to the correct thread to resume the process
+    CLIENT ID:
+        unique id of the client.
     TO:
         list of services which this package will go through
         if this list is empty, the package will be sent back to FROM+INSTANCE
