@@ -4,6 +4,9 @@ import chain.Link;
 import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
 
+/**
+ * restructure the received package into header - body format
+ */
 class LinkReformatJson extends Link<ResolveChain> {
     LinkReformatJson(ResolveChain chain) {
         super(chain);

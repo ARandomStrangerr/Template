@@ -8,6 +8,9 @@ import memorable.IncomingConnection;
 import java.io.IOException;
 import java.util.Hashtable;
 
+/**
+ * get access list of module for the client send the request
+ */
 class LinkGetPrivilege extends LinkWait<ResolveChain> {
     LinkGetPrivilege(ResolveChain chain, Hashtable<Integer, LinkWait> threadTable) {
         super(chain, threadTable);

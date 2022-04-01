@@ -3,6 +3,9 @@ package chain.incoming_connection.resolve.listener;
 import chain.Link;
 import com.google.gson.JsonArray;
 
+/**
+ * depends on the name of the job needed, change it into array of modules needed to process the request.
+ */
 class LinkJobTranslate extends Link<ResolveChain> {
      LinkJobTranslate(ResolveChain chain) {
          super(chain);

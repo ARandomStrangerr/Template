@@ -4,6 +4,9 @@ import chain.Chain;
 import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
 
+/**
+ * chain responsible for process request comes from outside
+ */
 public class ResolveChain extends Chain {
     public ResolveChain(JsonObject processObject) {
         super(processObject);
