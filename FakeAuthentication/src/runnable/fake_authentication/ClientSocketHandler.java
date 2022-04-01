@@ -30,7 +30,7 @@ public class ClientSocketHandler extends runnable.ClientSocketHandler {
      */
     @Override
     protected Chain getResolveChain(JsonObject processObject) {
-        return new RejectChain(processObject);
+        return new ResolveChain(processObject);
     }
 
     /**
@@ -41,6 +41,6 @@ public class ClientSocketHandler extends runnable.ClientSocketHandler {
      */
     @Override
     protected Chain getRejectChain(JsonObject processObject) {
-        return new ResolveChain(processObject);
+        return new RejectChain(processObject);
     }
 }
