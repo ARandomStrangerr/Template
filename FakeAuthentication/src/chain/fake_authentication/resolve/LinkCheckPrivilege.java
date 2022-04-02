@@ -8,8 +8,11 @@ import memorable.FakeAuthentication;
 
 import java.util.HashSet;
 
- class LinkCheckPrivilege extends Link<ResolveChain> {
-     LinkCheckPrivilege(ResolveChain chain) {
+/**
+ * check if client has authority to access the requested modules
+ */
+class LinkCheckPrivilege extends Link<ResolveChain> {
+    LinkCheckPrivilege(ResolveChain chain) {
         super(chain);
     }
 
@@ -27,7 +30,8 @@ import java.util.HashSet;
         try {
             HashSet<String> privilegeSet = FakeAuthentication.getInstance().getPrivilegeTable().get(clientName);
             for (JsonElement module : requestModules)
-                if (!privilegeSet.contains(module.getAsString())) throw new NullPointerException(); // will always throw exception in this line
+                if (!privilegeSet.contains(module.getAsString()))
+                    throw new NullPointerException(); // will always throw exception in this line
         } catch (NullPointerException e) {
             chain.getProcessObject().addProperty("error", "client does not have privilege to access");
             System.err.println("client does not have privilege to access");

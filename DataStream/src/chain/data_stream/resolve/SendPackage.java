@@ -24,6 +24,7 @@ public class SendPackage extends Link<ResolveChain> {
         JsonObject header = chain.getProcessObject().get("header").getAsJsonObject();
         JsonArray to = header.get("to").getAsJsonArray();
         boolean status = header.get("status").getAsBoolean();
+        // determine which socket to send to
         Socket socket;
         if (to.size() == 0 || !status){ // case if the request run to its end or no longer valid
             String from = header.get("from").getAsString();
@@ -32,8 +33,10 @@ public class SendPackage extends Link<ResolveChain> {
         } else {
             socket = DataStream.getInstance().listener.getSocket(to.remove(0).getAsString());
         }
+        // send package to the determinate socket
         try {
             socket.write(chain.getProcessObject().toString());
+//            socket.increaseActiveRequest(); // increase the number of active request on the socket
         } catch (IOException e){
             System.err.println("Cannot send package to indicated socket");
             e.printStackTrace();

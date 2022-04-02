@@ -7,6 +7,9 @@ import socket.Socket;
 
 import java.io.IOException;
 
+/**
+ * send json after process back to DataStream
+ */
 public class LinkSendToDataStream extends Link {
     public LinkSendToDataStream(Chain chain) {
         super(chain);
@@ -20,6 +23,7 @@ public class LinkSendToDataStream extends Link {
      */
     @Override
     protected boolean resolve() {
+        chain.getProcessObject().get("header").getAsJsonObject().addProperty("decrease", true);
         Socket socket = FakeAuthentication.getInstance().getSocket();
         try{
             socket.write(chain.getProcessObject().toString());
