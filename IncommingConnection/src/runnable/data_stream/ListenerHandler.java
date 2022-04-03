@@ -4,6 +4,7 @@ import chain.Chain;
 import chain.incoming_connection.resolve.listener.ResolveChain;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import memorable.IncomingConnection;
 import runnable.HostSocketHandler;
 import socket.Listener;
 import socket.Socket;
@@ -27,21 +28,11 @@ public class ListenerHandler extends runnable.ListenerHandler {
      */
     @Override
     protected SocketVerification getSocketVerification(Socket socket, Listener listener) {
-        return () -> {
-            // read from the socket, this supposed to be mac address of the connected computer. todo - change to better type of authentication later
-            String receivedString;
-            try {
-                receivedString = socket.read();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-            // store the mac address
-            socket.setName(receivedString);
-            // store the socket into the listener collection
-            listener.putSocket(receivedString, socket);
-            return true;
-        };
+        /*
+        there is no check up, just receive the socket, see the package.
+        the save socket and name of the socket will be done at socket handling level.
+        */
+        return () -> true;
     }
 
     /**
@@ -68,22 +59,18 @@ public class ListenerHandler extends runnable.ListenerHandler {
                     // if the package is null, the socket from the other side is closed.
                     if (pkg == null) break;
                     // spawn thread to handle newly received package
-                    Runnable handlePkg;
-                    handlePkg = () -> {
-                        // convert the pkg from string to Json
-                        Gson gson;
-                        gson = new Gson();
-                        JsonObject jsonPkg;
-                        jsonPkg = gson.fromJson(pkg, JsonObject.class);
-                        // include name of the socket into the package;
-                        jsonPkg.addProperty("clientId", socket.getName());
-                        // pass the json pkg into the designated process chain
-                        boolean isResolve;
-                        isResolve = getResolveChain(jsonPkg).resolve();
-                        if (!isResolve) getRejectChain(jsonPkg).resolve();
-                    };
-                    // start thread to handle
-                    new Thread(handlePkg).start();
+                    // convert the pkg from string to Json
+                    Gson gson;
+                    gson = new Gson();
+                    JsonObject jsonPkg;
+                    jsonPkg = gson.fromJson(pkg, JsonObject.class);
+                    // set socket name
+                    socket.setName(jsonPkg.get("clientId").getAsString());
+                    IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
+                    // pass the json pkg into the designated process chain
+                    boolean isResolve;
+                    isResolve = getResolveChain(jsonPkg).resolve();
+                    if (!isResolve) getRejectChain(jsonPkg).resolve();
                 }
             }
 
