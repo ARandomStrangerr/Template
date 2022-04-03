@@ -42,7 +42,6 @@ class LinkReformatJson extends Link<ResolveChain> {
         chain.getProcessObject().add("header", header);
         chain.getProcessObject().add("body", body);
 
-        System.out.println(chain.getProcessObject());
         return true;
     }
 }
