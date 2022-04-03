@@ -1,6 +1,7 @@
 package chain.incoming_connection.resolve.client_socket;
 
 import chain.Chain;
+import chain.incoming_connection.LinkSendBackToClient;
 import com.google.gson.JsonObject;
 
 /**
@@ -14,5 +15,6 @@ public class ResolveChain extends Chain {
     @Override
     protected void chainConstruction() {
         super.chain.add(new LinkProvokeThread(this));
+        super.chain.add(new LinkSendBackToClient(this));
     }
 }

@@ -17,5 +17,6 @@ public class ResolveChain extends Chain {
         chain.add(new LinkJobTranslate(this));
         chain.add(new LinkReformatJson(this));
         chain.add(new LinkGetPrivilege(this, IncomingConnection.getInstance().getThreadTable()));
+        chain.add(new LinkSendToDataStream(this));
     }
 }
