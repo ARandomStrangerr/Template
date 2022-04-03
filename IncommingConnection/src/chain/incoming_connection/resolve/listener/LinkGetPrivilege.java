@@ -56,8 +56,7 @@ class LinkGetPrivilege extends LinkWait<ResolveChain> {
             e.printStackTrace();
             return false;
         }
-        // code after unpause
-        System.out.println(this.getAdditionalInfo());
+        if(this.getAdditionalInfo().has("error")) return false;
         return true;
     }
 }
