@@ -72,7 +72,7 @@ public abstract class ListenerHandler implements Runnable {
                     e.printStackTrace();
                 }
                 // notify the system that a socket is logged out
-                System.out.printf("Module disconnected from the network %S - %d\n", socket.getName(), socket.hashCode());
+                System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
             };
             new Thread(runnable).start();
         }
