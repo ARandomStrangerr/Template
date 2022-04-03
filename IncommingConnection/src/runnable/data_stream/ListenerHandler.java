@@ -46,32 +46,30 @@ public class ListenerHandler extends runnable.ListenerHandler {
         return new HostSocketHandler(socket) {
             @Override
             public void run() {
-                // while true loop to read data from the socket
-                while (true) {
-                    // receive package from socket
-                    String pkg;
-                    try {
-                        pkg = socket.read();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-                    // if the package is null, the socket from the other side is closed.
-                    if (pkg == null) break;
-                    // spawn thread to handle newly received package
-                    // convert the pkg from string to Json
-                    Gson gson;
-                    gson = new Gson();
-                    JsonObject jsonPkg;
-                    jsonPkg = gson.fromJson(pkg, JsonObject.class);
-                    // set socket name
-                    socket.setName(jsonPkg.get("clientId").getAsString());
-                    IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
-                    // pass the json pkg into the designated process chain
-                    boolean isResolve;
-                    isResolve = getResolveChain(jsonPkg).resolve();
-                    if (!isResolve) getRejectChain(jsonPkg).resolve();
+                // receive package from socket
+                String pkg;
+                try {
+                    pkg = socket.read();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
                 }
+                // if the package is null, the socket from the other side is closed.
+                if (pkg == null) return;
+                // spawn thread to handle newly received package
+                // convert the pkg from string to Json
+                Gson gson;
+                gson = new Gson();
+                JsonObject jsonPkg;
+                jsonPkg = gson.fromJson(pkg, JsonObject.class);
+                // set socket name
+                socket.setName(jsonPkg.get("clientId").getAsString());
+                IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
+                // pass the json pkg into the designated process chain
+                boolean isResolve;
+                isResolve = getResolveChain(jsonPkg).resolve();
+                if (!isResolve) getRejectChain(jsonPkg).resolve();
+
             }
 
             @Override
