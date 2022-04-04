@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class ListenerHandler extends runnable.ListenerHandler {
     public ListenerHandler(Listener listener, int millisecond) {
-        super(listener, millisecond);
+        super(listener, millisecond, true);
     }
 
     /**

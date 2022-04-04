@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class ListenerHandler extends runnable.ListenerHandler {
     public ListenerHandler(Listener listener, int millisecond) {
-        super(listener, millisecond);
+        super(listener, millisecond, false);
     }
 
     /**
@@ -64,12 +64,12 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 jsonPkg = gson.fromJson(pkg, JsonObject.class);
                 // set socket name
                 socket.setName(jsonPkg.get("clientId").getAsString());
+                // store socket
                 IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
                 // pass the json pkg into the designated process chain
                 boolean isResolve;
                 isResolve = getResolveChain(jsonPkg).resolve();
                 if (!isResolve) getRejectChain(jsonPkg).resolve();
-
             }
 
             @Override

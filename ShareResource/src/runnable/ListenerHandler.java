@@ -12,15 +12,20 @@ import java.io.IOException;
 public abstract class ListenerHandler implements Runnable {
     private final Listener listener;
     private final int millisecond;
+    private final boolean autoSocketTermination;
 
     /**
-     * @param listener    the listener needs to be controlled
-     * @param millisecond amount of time the newly accepted socket needed to declare its initial message
+     * @param listener              the listener which is needed to be controlled
+     * @param millisecond           amount of time the newly accepted socket needed to declare its initial message
+     * @param autoSocketTermination automatically close the socket accepted by this listener when done with the given
+     *                              {@link HostSocketHandler}
      */
     public ListenerHandler(Listener listener,
-                           int millisecond) {
+                           int millisecond,
+                           boolean autoSocketTermination) {
         this.listener = listener;
         this.millisecond = millisecond;
+        this.autoSocketTermination = autoSocketTermination;
     }
 
     /**
@@ -56,23 +61,28 @@ public abstract class ListenerHandler implements Runnable {
                     // notify the system that a socket is successfully established
                     System.out.printf("Module connected to the network %s - %d\n", socket.getName(), socket.hashCode());
                     // run the socket handler to put it into infinity while loop to read and write (not spawning a thread, it is a continuance of this one)
-                    getSocketHandler(socket).run();
+                    try {
+                        getSocketHandler(socket).run();
+                    } catch (Exception ignore) {
+                    }
                 }
                 // either the verification fail or the read loop is complete
                 // close the socket to prevent memory leak
-                try {
-                    socket.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (autoSocketTermination) {
+                    try {
+                        socket.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // remove the socket out from the listener collection
+                    try {
+                        listener.removeSocket(socket);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // notify the system that a socket is logged out
+                    System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
                 }
-                // remove the socket out from the listener collection
-                try {
-                    listener.removeSocket(socket);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // notify the system that a socket is logged out
-                System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
             };
             new Thread(runnable).start();
         }
