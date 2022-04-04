@@ -29,8 +29,9 @@ public class OneToOneStorage implements StorageInterface {
      */
     @Override
     public Socket get(String key) throws NullPointerException {
-
-        return null;
+        Socket socket = storageStructure.get(key);
+        if (socket == null) throw new NullPointerException("No such socket associated with key " + key);
+        return socket;
     }
 
     /**
