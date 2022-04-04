@@ -25,11 +25,20 @@ public class LinkSendBackToClient extends Link {
     protected boolean resolve() {
         String clientId = chain.getProcessObject().get("header").getAsJsonObject().get("clientId").getAsString();
         Socket socket = IncomingConnection.getInstance().getListener().getSocket(clientId);
+        // send the processed file to socket
         try {
             socket.write(chain.getProcessObject().toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // close the socket manually
+        try{
+            socket.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        // remove the socket from collection
+        IncomingConnection.getInstance().getListener().removeSocket(socket);
         return true;
     }
 }
