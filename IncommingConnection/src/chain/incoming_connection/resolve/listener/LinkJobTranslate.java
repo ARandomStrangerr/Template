@@ -23,7 +23,7 @@ class LinkJobTranslate extends Link<ResolveChain> {
          JsonArray toArray = new JsonArray();
          switch (requestJob){
              case "GetInvoice":
-                 toArray.add("GetInvoice");
+                 toArray.add("ViettelInvoiceGet");
                  break;
          }
          chain.getProcessObject().add("to", toArray);
