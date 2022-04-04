@@ -38,6 +38,7 @@ public class SendPackage extends Link<ResolveChain> {
             socket.write(chain.getProcessObject().toString());
 //            socket.increaseActiveRequest(); // increase the number of active request on the socket
         } catch (IOException e){
+            chain.getProcessObject().addProperty("error", "Cannot send package to indicated module");
             System.err.println("Cannot send package to indicated socket");
             e.printStackTrace();
             return false;
