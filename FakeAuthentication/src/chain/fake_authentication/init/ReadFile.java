@@ -35,7 +35,7 @@ public class ReadFile extends Link<InitChain> {
             fileReader = new BufferedReader(new FileReader(chain.authenticationFile));
             for (String line = fileReader.readLine(); line != null; line = fileReader.readLine()) {
                 macAndPrivilege = line.split("=");
-                privilegeList = macAndPrivilege[1].split(":");
+                privilegeList = macAndPrivilege[1].split(",");
                 HashSet<String> privilegeSet = new HashSet<>(Arrays.asList(privilegeList));
                 privilegeTable.put(macAndPrivilege[0], privilegeSet);
             }
