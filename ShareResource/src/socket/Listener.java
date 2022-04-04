@@ -59,7 +59,7 @@ public class Listener {
         this.storage.add(key, socket);
     }
 
-    public Socket getSocket(String key) {
+    public Socket getSocket(String key) throws NullPointerException {
         return storage.get(key);
     }
 
