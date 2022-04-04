@@ -3,6 +3,7 @@ package chain.incoming_connection;
 import chain.Chain;
 import chain.Link;
 import memorable.IncomingConnection;
+import socket.Socket;
 
 import java.io.IOException;
 
@@ -23,8 +24,9 @@ public class LinkSendBackToClient extends Link {
     @Override
     protected boolean resolve() {
         String clientId = chain.getProcessObject().get("header").getAsJsonObject().get("clientId").getAsString();
+        Socket socket = IncomingConnection.getInstance().getListener().getSocket(clientId);
         try {
-            IncomingConnection.getInstance().getListener().getSocket(clientId).write(chain.getProcessObject().toString());
+            socket.write(chain.getProcessObject().toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
