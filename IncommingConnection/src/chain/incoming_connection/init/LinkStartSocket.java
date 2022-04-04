@@ -32,6 +32,7 @@ class LinkStartSocket extends Link<InitChain> {
         IncomingConnection.getInstance().setSocket(socket);
         // start thread to handle socket
         new Thread(new ClientSocketHandler(socket, IncomingConnection.getInstance().getName())).start();
+        System.out.printf("Connected to DataStream at %s:%d\n", chain.dataStreamAddress.getHostAddress(), chain.dataStreamPort);
         return true;
     }
 }

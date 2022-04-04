@@ -33,6 +33,7 @@ class LinkStartListener extends Link<InitChain> {
         IncomingConnection.getInstance().setListener(listener);
         // start thread to handle listener
         new Thread(new ListenerHandler(listener, chain.initialDisconnectTime)).start();
+        System.out.printf("Listener is opened at port %d\n", chain.incomingConnectionPort);
         return true;
     }
 }
