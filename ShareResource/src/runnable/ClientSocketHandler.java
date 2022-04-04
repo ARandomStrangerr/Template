@@ -79,6 +79,8 @@ public abstract class ClientSocketHandler implements Runnable {
             System.err.println("DataStream is closed");
             e.printStackTrace();
         }
+        // force exit if any other thread is running (module running listener as separated thread) cease all at once.
+        System.exit(1);
     }
 
     /**
