@@ -29,9 +29,10 @@ class LinkCheckPrivilege extends Link<ResolveChain> {
         JsonArray requestModules = body.get("requestModule").getAsJsonArray();
         try {
             HashSet<String> privilegeSet = FakeAuthentication.getInstance().getPrivilegeTable().get(clientName);
-            for (JsonElement module : requestModules)
+            for (JsonElement module : requestModules) {
                 if (!privilegeSet.contains(module.getAsString()))
-                    throw new NullPointerException(); // will always throw exception in this line
+                    throw new NullPointerException(module.toString()); // will always throw exception in this line
+            }
         } catch (NullPointerException e) {
             chain.getProcessObject().addProperty("error", "client does not have privilege to access");
             System.err.println("client does not have privilege to access");
