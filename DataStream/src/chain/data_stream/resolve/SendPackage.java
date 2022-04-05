@@ -26,18 +26,25 @@ public class SendPackage extends Link<ResolveChain> {
         boolean status = header.get("status").getAsBoolean();
         // determine which socket to send to
         Socket socket;
-        if (to.size() == 0 || !status){ // case if the request run to its end or no longer valid
+        if (to.size() == 0 || !status) { // case if the request run to its end or no longer valid
             String from = header.get("from").getAsString();
             int instance = header.get("instance").getAsInt();
             socket = DataStream.getInstance().listener.getSocket(from, instance);
         } else {
-            socket = DataStream.getInstance().listener.getSocket(to.remove(0).getAsString());
+            String socketGroupName = to.remove(0).getAsString();
+            try {
+                socket = DataStream.getInstance().listener.getSocket(socketGroupName);
+            } catch (NullPointerException e) {
+                System.err.printf("Socket group associated with the name %s does not exists", socketGroupName);
+                chain.getProcessObject().addProperty("error", String.format("Socket under the name of %s does not exists, please contact programmer to get this problem fixed", socketGroupName));
+                return false;
+            }
         }
         // send package to the determinate socket
         try {
             socket.write(chain.getProcessObject().toString());
 //            socket.increaseActiveRequest(); // increase the number of active request on the socket
-        } catch (IOException e){
+        } catch (IOException e) {
             chain.getProcessObject().addProperty("error", "Cannot send package to indicated module");
             System.err.println("Cannot send package to indicated socket");
             e.printStackTrace();
