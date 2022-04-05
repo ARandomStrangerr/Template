@@ -63,7 +63,8 @@ public abstract class ListenerHandler implements Runnable {
                     // run the socket handler to put it into infinity while loop to read and write (not spawning a thread, it is a continuance of this one)
                     try {
                         getSocketHandler(socket).run();
-                    } catch (Exception ignore) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 // either the verification fail or the read loop is complete
