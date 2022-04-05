@@ -26,19 +26,51 @@ class LinkGetInvoice extends Link<ResolveChain> {
     @Override
     protected boolean resolve() {
         JsonObject body = chain.getProcessObject().get("body").getAsJsonObject();
-        int start = body.get("start").getAsInt(), // starting iteration
-                end = body.get("end").getAsInt(); // ending iteration
-        String address = "https://api-sinvoice.viettel.vn:443/InvoiceAPI/InvoiceUtilsWS/getInvoiceRepresentationFile/", // address to connect to
-                username = body.get("username").getAsString(), // username to login into viettel server
-                password = body.get("password").getAsString(), // password to login into viettel server
-                verification = String.format("Basic %s", Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8))), // authentication code to login based on username and password
-                invoiceSeries = body.get("invoiceSeries").getAsString(); // invoice series of the invoice
+        // craft json body object to send
+        int start, end;
+        try {
+            start = body.get("start").getAsInt(); // starting iteration
+        } catch (Exception e) {
+            System.err.println("Start number missing or invalid");
+            chain.getProcessObject().addProperty("error", "Vấn đề với số bắt đầu");
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            end = body.get("end").getAsInt(); // ending iteration
+        } catch (Exception e) {
+            System.err.println("End number missing or invalid");
+            chain.getProcessObject().addProperty("error", " Vấn đề với số kết thúc");
+            e.printStackTrace();
+            return false;
+        }
+        String address, username, password, verification, invoiceSeries;
+        address = "https://api-sinvoice.viettel.vn:443/InvoiceAPI/InvoiceUtilsWS/getInvoiceRepresentationFile/"; // address to connect to\
+        try {
+            username = body.get("username").getAsString(); // username to login into viettel server
+        } catch (Exception e) {
+            System.err.println("Username missing or invalid");
+            chain.getProcessObject().addProperty("error", "Không lấy được tên đăng nhập");
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            password = body.get("password").getAsString(); // password to login into viettel server
+        } catch (Exception e) {
+            System.err.println("Password missing or invalid");
+            chain.getProcessObject().addProperty("error", "Không lấy được mật khẩu");
+            e.printStackTrace();
+            return false;
+        }
+        verification = String.format("Basic %s", Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8))); // authentication code to login based on username and password
+        invoiceSeries = body.get("invoiceSeries").getAsString(); // invoice series of the invoice
         JsonObject sendObject = new JsonObject(); // the object which is used to send data to viettel
         sendObject.addProperty("supplierTaxCode", username);
         sendObject.addProperty("fileType", "PDF");
         sendObject.addProperty("templateCode", body.get("templateCode").getAsString());
-        Gson gson = new Gson(); // object use to send data
+        Gson gson = new Gson(); // object uses to send data
         Socket socket = ViettelInvoiceGet.getInstance().getSocket();
+        // loop to send data
         for (int index = start; index <= end; index++) { // request for each inoice
             sendObject.addProperty("invoiceNo", String.format("%s%07d", invoiceSeries, index)); // set the invoice name to the paackage
             // step open connections to the address
