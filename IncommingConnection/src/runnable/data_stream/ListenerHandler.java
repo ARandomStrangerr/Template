@@ -1,6 +1,7 @@
 package runnable.data_stream;
 
 import chain.Chain;
+import chain.incoming_connection.reject.listener.RejectChain;
 import chain.incoming_connection.resolve.listener.ResolveChain;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -79,7 +80,7 @@ public class ListenerHandler extends runnable.ListenerHandler {
 
             @Override
             public Chain getRejectChain(JsonObject receivedObject) {
-                return null;
+                return new RejectChain(receivedObject);
             }
         };
     }
