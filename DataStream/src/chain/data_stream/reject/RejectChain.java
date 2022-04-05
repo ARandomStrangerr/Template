@@ -10,6 +10,6 @@ public class RejectChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-
+        chain.add(new SendPackage(this));
     }
 }
