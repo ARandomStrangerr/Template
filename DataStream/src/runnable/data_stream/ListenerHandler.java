@@ -86,7 +86,10 @@ public class ListenerHandler extends runnable.ListenerHandler {
                         }
                         // access resolve chain of command
                         boolean isResolve = getResolveChain(json).resolve(); // resolve the request
-                        if (!isResolve) getRejectChain(json).resolve(); // if fail to resolve
+                        if (!isResolve){
+                            json.get("header").getAsJsonObject().addProperty("status", false);
+                            getRejectChain(json).resolve(); // if fail to resolve
+                        }
                     };
                     new Thread(runnable).start(); // start the runnable to handler the request
                 }
