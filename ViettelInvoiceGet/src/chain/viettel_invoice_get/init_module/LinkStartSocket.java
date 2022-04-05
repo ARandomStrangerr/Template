@@ -7,6 +7,9 @@ import socket.Socket;
 
 import java.io.IOException;
 
+/**
+ *  connect socket to DataStream
+ */
 class LinkStartSocket extends Link<InitChain> {
     LinkStartSocket(InitChain chain) {
         super(chain);
@@ -29,6 +32,7 @@ class LinkStartSocket extends Link<InitChain> {
         ViettelInvoiceGet.getInstance().setSocket(socket); // store socket
         ClientSocketHandler handler = new ClientSocketHandler(socket, chain.moduleName);
         new Thread(handler).start();
+        System.out.printf("Opened socket to DataStrema at %s:%d", chain.address.getHostAddress(), chain.port);
         return true;
     }
 }
