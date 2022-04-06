@@ -22,7 +22,14 @@ public class SendPackage extends Link<ResolveChain> {
     @Override
     protected boolean resolve() {
         JsonObject header = chain.getProcessObject().get("header").getAsJsonObject();
-        JsonArray to = header.get("to").getAsJsonArray();
+        JsonArray to;
+        try{
+            to = header.get("to").getAsJsonArray();
+        } catch (NullPointerException e){
+            System.err.println("To array in the header is missing");
+            e.printStackTrace();
+            return false;
+        }
         boolean status = header.get("status").getAsBoolean();
         // determine which socket to send to
         Socket socket;
