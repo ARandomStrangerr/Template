@@ -1,6 +1,7 @@
 package chain.incoming_connection.reject.listener;
 
 import chain.Chain;
+import chain.incoming_connection.LinkClientSocketTermination;
 import chain.incoming_connection.LinkSendBackToClient;
 import com.google.gson.JsonObject;
 
@@ -12,5 +13,6 @@ public class RejectChain extends Chain {
     @Override
     protected void chainConstruction() {
         chain.add(new LinkSendBackToClient(this));
+        chain.add(new LinkClientSocketTermination(this));
     }
 }
