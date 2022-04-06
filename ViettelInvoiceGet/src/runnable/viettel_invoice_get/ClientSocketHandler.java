@@ -1,6 +1,7 @@
 package runnable.viettel_invoice_get;
 
 import chain.Chain;
+import chain.viettel_invoice_get.reject.RejectChain;
 import chain.viettel_invoice_get.resolve.ResolveChain;
 import com.google.gson.JsonObject;
 import memorable.ViettelInvoiceGet;
@@ -40,6 +41,6 @@ public class ClientSocketHandler extends runnable.ClientSocketHandler {
      */
     @Override
     protected Chain getRejectChain(JsonObject processObject) {
-        return null;
+        return new RejectChain(processObject);
     }
 }
