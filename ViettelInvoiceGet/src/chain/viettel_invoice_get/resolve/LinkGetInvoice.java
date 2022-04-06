@@ -30,17 +30,27 @@ class LinkGetInvoice extends Link<ResolveChain> {
         int start, end;
         try {
             start = body.get("start").getAsInt(); // starting iteration
-        } catch (Exception e) {
-            System.err.println("Start number missing or invalid");
-            chain.getProcessObject().addProperty("error", "Vấn đề với số bắt đầu");
+        } catch (NullPointerException e) {
+            System.err.println("Start number is missing");
+            chain.getProcessObject().addProperty("error", "Không tìm thấy trường số bắt đầu");
+            e.printStackTrace();
+            return false;
+        } catch (NumberFormatException e){
+            System.err.println("Start number is not a number");
+            chain.getProcessObject().addProperty("error","Trường số bắt đầu không phải định dạng số");
             e.printStackTrace();
             return false;
         }
         try {
             end = body.get("end").getAsInt(); // ending iteration
-        } catch (Exception e) {
-            System.err.println("End number missing or invalid");
+        } catch (NullPointerException e) {
+            System.err.println("End number is missing");
             chain.getProcessObject().addProperty("error", " Vấn đề với số kết thúc");
+            e.printStackTrace();
+            return false;
+        }catch (NumberFormatException e){
+            System.err.println("End number is invalid");
+            chain.getProcessObject().addProperty("error", "Trường số kết thúc không phải định dạng số");
             e.printStackTrace();
             return false;
         }
@@ -56,7 +66,7 @@ class LinkGetInvoice extends Link<ResolveChain> {
         }
         try {
             password = body.get("password").getAsString(); // password to login into viettel server
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             System.err.println("Password missing or invalid");
             chain.getProcessObject().addProperty("error", "Không lấy được mật khẩu");
             e.printStackTrace();

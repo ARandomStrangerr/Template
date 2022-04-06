@@ -31,14 +31,6 @@ public class LinkSendBackToClient extends Link {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // close the socket manually
-        try{
-            socket.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        // remove the socket from collection
-        IncomingConnection.getInstance().getListener().removeSocket(socket);
         return true;
     }
 }
