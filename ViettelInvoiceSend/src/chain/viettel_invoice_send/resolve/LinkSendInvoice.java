@@ -1,6 +1,7 @@
-package chain.viettel_invoice_send;
+package chain.viettel_invoice_send.resolve;
 
 import chain.Link;
+import chain.viettel_invoice_send.ProcessChain;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,8 +13,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class ProcessLinkSendInvoice extends Link<ProcessChain> {
-    public ProcessLinkSendInvoice(ProcessChain chain) {
+public class LinkSendInvoice extends Link<ProcessChain> {
+    public LinkSendInvoice(ProcessChain chain) {
         super(chain);
     }
 

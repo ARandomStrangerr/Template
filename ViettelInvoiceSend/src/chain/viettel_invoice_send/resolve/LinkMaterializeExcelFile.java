@@ -1,6 +1,7 @@
-package chain.viettel_invoice_send;
+package chain.viettel_invoice_send.resolve;
 
 import chain.Link;
+import chain.viettel_invoice_send.ProcessChain;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,8 +9,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class ProcessLinkMaterializeExcelFile extends Link<ProcessChain> {
-    public ProcessLinkMaterializeExcelFile(ProcessChain chain) {
+public class LinkMaterializeExcelFile extends Link<ProcessChain> {
+    public LinkMaterializeExcelFile(ProcessChain chain) {
         super(chain);
     }
 

@@ -1,6 +1,7 @@
-package chain.viettel_invoice_send;
+package chain.viettel_invoice_send.resolve;
 
 import chain.Link;
+import chain.viettel_invoice_send.ProcessChain;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import file_operation.ExcelFile;
@@ -14,8 +15,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ProcessLinkReadExcelFile extends Link<ProcessChain> {
-    public ProcessLinkReadExcelFile(ProcessChain chain) {
+public class LinkReadExcelFile extends Link<ProcessChain> {
+    public LinkReadExcelFile(ProcessChain chain) {
         super(chain);
     }
 
