@@ -29,17 +29,10 @@ public class LinkSendToDataStream extends Link {
         one way or the other, the body message after this point is no longer needed.
         its only purposes is to inform decreasing counter
          */
-        JsonObject processObject, header;
-        processObject = chain.getProcessObject();
-        processObject.remove("header");
-        processObject.remove("body");
-        header = new JsonObject();
-        header.addProperty("decrease", true);
-        processObject.add("header", header);
         Socket socket;
         socket = ViettelInvoiceGet.getInstance().getSocket();
         try {
-            socket.write(processObject.toString());
+            socket.write(chain.getProcessObject().toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
