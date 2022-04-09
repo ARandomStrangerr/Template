@@ -12,6 +12,7 @@ public class ResolveChain extends Chain {
     @Override
     protected void chainConstruction() {
         super.chain.add(new LinkGetInvoice(this));
+        super.chain.add(new LinkFormatFinalMessage(this));
         super.chain.add(new LinkSendToDataStream(this));
     }
 }

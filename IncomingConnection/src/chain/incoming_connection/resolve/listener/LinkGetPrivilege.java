@@ -56,6 +56,12 @@ class LinkGetPrivilege extends LinkWait<ResolveChain> {
             e.printStackTrace();
             return false;
         }
-        return this.getAdditionalInfo().get("header").getAsJsonObject().get("status").getAsBoolean();
+        if(!this.getAdditionalInfo().get("header").getAsJsonObject().get("status").getAsBoolean()){
+            chain.getProcessObject().get("header").getAsJsonObject().addProperty("status", false);
+            chain.getProcessObject().get("header").getAsJsonObject().addProperty("terminate", true);
+            chain.getProcessObject().add("error", this.getAdditionalInfo().get("error"));
+            return false;
+        }
+        return true;
     }
 }

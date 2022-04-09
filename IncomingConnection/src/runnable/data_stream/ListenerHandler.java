@@ -64,7 +64,20 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 JsonObject jsonPkg;
                 jsonPkg = gson.fromJson(pkg, JsonObject.class);
                 // set socket name
-                socket.setName(jsonPkg.get("clientId").getAsString());
+                String clientId;
+                try{
+                    clientId = jsonPkg.get("clientId").getAsString();
+                } catch (NullPointerException e){
+                    System.err.println("Where is your clientId?");
+                    e.printStackTrace();
+                    try {
+                        socket.write("{\"error\":\"missing clientId\"}");
+                    }catch (IOException e1){
+                        e1.printStackTrace();
+                    }
+                    return;
+                }
+                socket.setName(clientId);
                 // store socket
                 IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
                 // pass the json pkg into the designated process chain

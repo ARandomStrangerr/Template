@@ -4,6 +4,8 @@ import chain.Link;
 import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
 
+import java.util.HashSet;
+
 /**
  * restructure the received package into header - body format
  */
@@ -35,7 +37,8 @@ class LinkReformatJson extends Link<ResolveChain> {
             body.add(key, chain.getProcessObject().get(key));
         }
         // wipe the data of the json object
-        for (String key : chain.getProcessObject().keySet()){
+        HashSet<String> keySet = new HashSet<>(chain.getProcessObject().keySet());
+        for (String key : keySet){
             chain.getProcessObject().remove(key);
         }
         // add header and body into the object

@@ -39,7 +39,7 @@ public class LinkClientSocketTermination extends Link {
             }
             // remove the socket from collection
             IncomingConnection.getInstance().getListener().removeSocket(socket);
-            System.out.printf("Module is disconnected from the network %s - %d", socket.getName(), socket.hashCode());
+            System.out.printf("Module is disconnected from the network %s - %d \n", socket.getName(), socket.hashCode());
         }
         return true;
     }

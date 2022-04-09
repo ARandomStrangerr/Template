@@ -7,6 +7,7 @@
         to: [ String::services_name ]
         status: < true / false >
         decrease: < true / false >
+        terminate: < true / false >
     }
 }
 
@@ -30,3 +31,6 @@ HEADER - contains necessary information for message flowing within the system.
     DECREASE:
         TRUE - decrease the number of instance that the service associates with this socket processing
         FALSE - this request just a by product, the original request sent this message is till running
+    TERMINATE:
+        TRUE - will terminate socket to client after this message
+        FALSE - will not terminate socket to client after this message
