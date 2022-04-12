@@ -5,6 +5,7 @@ import chain.incoming_connection.reject.listener.RejectChain;
 import chain.incoming_connection.resolve.listener.ResolveChain;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import memorable.IncomingConnection;
 import runnable.HostSocketHandler;
 import socket.Listener;
@@ -12,6 +13,10 @@ import socket.Socket;
 import socket.SocketVerification;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
 
 public class ListenerHandler extends runnable.ListenerHandler {
     public ListenerHandler(Listener listener, int millisecond) {
@@ -47,7 +52,7 @@ public class ListenerHandler extends runnable.ListenerHandler {
         return new HostSocketHandler(socket) {
             @Override
             public void run() {
-                // receive package from socket
+                // if the package is null, the socket from the other side is closed.
                 String pkg;
                 try {
                     pkg = socket.read();
@@ -55,24 +60,38 @@ public class ListenerHandler extends runnable.ListenerHandler {
                     e.printStackTrace();
                     return;
                 }
-                // if the package is null, the socket from the other side is closed.
                 if (pkg == null) return;
                 // spawn thread to handle newly received package
                 // convert the pkg from string to Json
                 Gson gson;
                 gson = new Gson();
                 JsonObject jsonPkg;
-                jsonPkg = gson.fromJson(pkg, JsonObject.class);
+                try {
+                    jsonPkg = gson.fromJson(pkg, JsonObject.class);
+                } catch (JsonSyntaxException e) {
+                    System.err.println("Given information is not json");
+                    e.printStackTrace();
+                    try {
+                        socket.write("{\"error\":\"incorrect json object format\"}");
+                        socket.close();
+                        System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    return;
+                }
                 // set socket name
                 String clientId;
-                try{
+                try {
                     clientId = jsonPkg.get("clientId").getAsString();
-                } catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     System.err.println("Where is your clientId?");
                     e.printStackTrace();
                     try {
                         socket.write("{\"error\":\"missing clientId\"}");
-                    }catch (IOException e1){
+                        socket.close();
+                        System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
+                    } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                     return;
