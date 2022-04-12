@@ -2,6 +2,7 @@ package chain.viettel_invoice_get.resolve;
 
 import chain.Link;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import memorable.ViettelInvoiceGet;
 import socket.Socket;
@@ -25,7 +26,8 @@ class LinkGetInvoice extends Link<ResolveChain> {
      */
     @Override
     protected boolean resolve() {
-        JsonObject body = chain.getProcessObject().get("body").getAsJsonObject();
+        JsonObject body = chain.getProcessObject().get("body").getAsJsonObject(),
+                header = chain.getProcessObject().get("header").getAsJsonObject();
         // craft json body object to send
         int start, end;
         try {
@@ -142,16 +144,27 @@ class LinkGetInvoice extends Link<ResolveChain> {
             }
             // send the data back immediately as an update after successfully receive it.
             JsonObject updateObject = new JsonObject(),
+                    headerUpdateObject = new JsonObject(),
                     bodyUpdateObject = new JsonObject();
+            JsonArray toArray = new JsonArray();
+            toArray.add("IncomingConnection");
+            headerUpdateObject.addProperty("from", ViettelInvoiceGet.getInstance().getModuleName());
+            headerUpdateObject.add("instance", header.get("instance"));
+            headerUpdateObject.add("clientId", header.get("clientId"));
+            headerUpdateObject.add("to",toArray);
+            headerUpdateObject.addProperty("status", true);
+            headerUpdateObject.addProperty("decrease", false);
+            headerUpdateObject.addProperty("terminate", false);
             bodyUpdateObject.add("name", returnObject.get("fileName"));
-            bodyUpdateObject.add("file", returnObject.get("fileToByte"));
-            updateObject.add("header", chain.getProcessObject().get("header"));
+            bodyUpdateObject.add("file", returnObject.get("fileToBytes"));
+            updateObject.add("header", headerUpdateObject);
             updateObject.add("body", bodyUpdateObject);
             try {
                 socket.write(updateObject.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.printf("Successfully get the invoice %s for tax id %s\n", returnObject.get("fileName"), username);
         }
         return true;
     }
