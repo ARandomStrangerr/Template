@@ -2,7 +2,6 @@ package chain.viettel_invoice_get;
 
 import chain.Chain;
 import chain.Link;
-import com.google.gson.JsonObject;
 import memorable.ViettelInvoiceGet;
 import socket.Socket;
 
@@ -29,8 +28,14 @@ public class LinkSendToDataStream extends Link {
         one way or the other, the body message after this point is no longer needed.
         its only purposes is to inform decreasing counter
          */
+        chain.getProcessObject().get("header").getAsJsonObject().addProperty("terminate", true);
         Socket socket;
         socket = ViettelInvoiceGet.getInstance().getSocket();
+        try{
+            Thread.sleep(3000);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         try {
             socket.write(chain.getProcessObject().toString());
         } catch (IOException e) {
