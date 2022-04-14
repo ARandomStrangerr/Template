@@ -26,7 +26,7 @@ public class LinkSendBackToClient extends Link {
         String clientId = chain.getProcessObject().get("header").getAsJsonObject().get("clientId").getAsString();
         Socket socket = IncomingConnection.getInstance().getListener().getSocket(clientId);
         // send the processed file to socket
-        String sendData = chain.getProcessObject().has("error") ? String.format("{\"error\":\"%s\"}",chain.getProcessObject().get("error")) : chain.getProcessObject().get("body").toString();
+        String sendData = chain.getProcessObject().has("error") ? String.format("{\"error\":%s}",chain.getProcessObject().get("error")) : chain.getProcessObject().get("body").toString();
         try {
             socket.write(sendData);
         } catch (IOException e) {
