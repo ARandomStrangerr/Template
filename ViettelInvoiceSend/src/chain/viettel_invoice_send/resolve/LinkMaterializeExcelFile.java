@@ -1,7 +1,6 @@
 package chain.viettel_invoice_send.resolve;
 
 import chain.Link;
-import chain.viettel_invoice_send.ProcessChain;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,8 +8,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class LinkMaterializeExcelFile extends Link<ProcessChain> {
-    public LinkMaterializeExcelFile(ProcessChain chain) {
+class LinkMaterializeExcelFile extends Link<ResolveChain> {
+    LinkMaterializeExcelFile(ResolveChain chain) {
         super(chain);
     }
 
@@ -26,7 +25,8 @@ public class LinkMaterializeExcelFile extends Link<ProcessChain> {
         byte[] encodedByteArray, decodedByteArray;
         try {
             encodedByteArray = chain.getProcessObject().get("body").getAsJsonObject()
-                    .get("file").getAsString()
+                    .remove("file")
+                    .getAsString()
                     .getBytes(StandardCharsets.UTF_8);
         } catch (NullPointerException e) {
             chain.getProcessObject().get("body").getAsJsonObject()
@@ -54,7 +54,7 @@ public class LinkMaterializeExcelFile extends Link<ProcessChain> {
         this.chain.getProcessObject().get("body").getAsJsonObject()
                 .remove("file");
 
-        this.chain.setExcelFile(excelFile);
+        this.chain.excelFile = excelFile;
         return true;
     }
 }
