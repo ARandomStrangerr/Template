@@ -1,6 +1,0 @@
-{
-    body: {
-        clientId: < String::mac_address >
-        requestModule: < [String]:module_array >
-    }
-}
