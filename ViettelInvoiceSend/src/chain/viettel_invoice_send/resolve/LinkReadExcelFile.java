@@ -1,11 +1,10 @@
 package chain.viettel_invoice_send.resolve;
 
 import chain.Link;
-import chain.viettel_invoice_send.ProcessChain;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import file_operation.ExcelFile;
-import memorable.MemorableViettelInvoiceSend;
+import memorable.ViettelInvoiceSend;
 import org.apache.poi.hssf.OldExcelFormatException;
 
 import java.io.IOException;
@@ -15,8 +14,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class LinkReadExcelFile extends Link<ProcessChain> {
-    public LinkReadExcelFile(ProcessChain chain) {
+class LinkReadExcelFile extends Link<ResolveChain> {
+    LinkReadExcelFile(ResolveChain chain) {
         super(chain);
     }
 
@@ -31,14 +30,14 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
         List<List<String>> rawInvoiceList;
         // read the Excel file
         try {
-            rawInvoiceList = ExcelFile.getInstance().read(chain.getExcelFile());
+            rawInvoiceList = ExcelFile.getInstance().read(chain.excelFile);
         } catch (IOException e) {
             chain.getProcessObject().get("body").getAsJsonObject()
                     .addProperty("response", "Tệp tin Excel đính kèm không hoạt động, vui lòng xem lại");
             System.err.println("Cannot read the excel file, probably somebody else is reading it");
             e.printStackTrace();
             return false;
-        } catch (OldExcelFormatException e){
+        } catch (OldExcelFormatException e) {
             chain.getProcessObject().get("body").getAsJsonObject()
                     .addProperty("presponse", "Định dạng tệp tin Excel đính kèm quá cũ, vui lòng đổi sang ddingj dạng ới hơn và thử lại");
             System.err.println("Old format excel file");
@@ -98,8 +97,8 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                             tempStr);
                 else {
                     chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response","Loại mã hoá đơn không chính xác ở dòng số " + rowIndex);
-                    System.err.println(MemorableViettelInvoiceSend.getName() + " invalid invoice type at index " + rowIndex);
+                            .addProperty("response", "Loại mã hoá đơn không chính xác ở dòng số " + rowIndex);
+                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
                     return false;
                 }
                 generalInvoiceObj.addProperty("invoiceType",
@@ -113,7 +112,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                 else {
                     chain.getProcessObject().get("body").getAsJsonObject()
                             .addProperty("response", "Loại mã hoá đơn không chính xác " + rowIndex);
-                    System.err.println(MemorableViettelInvoiceSend.getName() + " invalid invoice series at index " + rowIndex);
+                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice series at index " + rowIndex);
                     return false;
                 }
                 //templateCode
@@ -123,7 +122,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                 } catch (NumberFormatException e) {
                     chain.getProcessObject().get("body").getAsJsonObject()
                             .addProperty("response", "Số mẫu kí hiệu hoá đơn không chính xác " + rowIndex);
-                    System.err.println(MemorableViettelInvoiceSend.getName() + " invalid invoice type at index " + rowIndex);
+                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
                     return false;
                 }
                 tempStr = String.format("%s0/%03d",
@@ -215,7 +214,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                 if (!buyerObj.has("buyerName") && !buyerObj.has("buyerLegalName")) {
                     chain.getProcessObject().get("body").getAsJsonObject()
                             .addProperty("response", "Tên cá nhân và tên đoàn thể không được cùng bỏ trống ở dòng số " + rowIndex);
-                    System.err.println(MemorableViettelInvoiceSend.getName() + " person name and company name cannot be blank at the same time " + rowIndex);
+                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " person name and company name cannot be blank at the same time " + rowIndex);
                     return false;
                 }
                 //address of the buyer
@@ -226,7 +225,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                 else {
                     chain.getProcessObject().get("body").getAsJsonObject()
                             .addProperty("response", "Địa chỉ nhận hoá đơn bị bỏ trống ở dòng số " + rowIndex);
-                    System.err.println(MemorableViettelInvoiceSend.getName() + " address is blank " + rowIndex);
+                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " address is blank " + rowIndex);
                     return false;
                 }
 
@@ -278,7 +277,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
                             if (tempStr.contains("true")) { //
                                 chain.getProcessObject().get("body").getAsJsonObject()
                                         .addProperty("response", "Biểu thị tiền hóa đơn là số âm sai khi dòng sản phẩm là chiết khấu\n" +
-                                        "ở dòng số: " + rowIndex);
+                                                "ở dòng số: " + rowIndex);
                             } else if (tempStr.contains("false")) {
                                 itemObj.addProperty("isIncreaseItem",
                                         false);
@@ -482,7 +481,7 @@ public class LinkReadExcelFile extends Link<ProcessChain> {
             }
         } catch (Exception e) {
             chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", e.getMessage());
+                    .addProperty("response", e.getMessage());
             e.printStackTrace();
             return false;
         }
