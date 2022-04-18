@@ -1,4 +1,4 @@
-package runnable.data_stream;
+package runnable.incoming_connection;
 
 import chain.Chain;
 import chain.incoming_connection.reject.listener.RejectChain;
@@ -102,7 +102,11 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 // pass the json pkg into the designated process chain
                 boolean isResolve;
                 isResolve = getResolveChain(jsonPkg).resolve();
-                if (!isResolve) getRejectChain(jsonPkg).resolve();
+                if (!isResolve) {
+                    jsonPkg.get("header").getAsJsonObject().addProperty("status", false);
+                    jsonPkg.get("header").getAsJsonObject().addProperty("terminate", true);
+                    getRejectChain(jsonPkg).resolve();
+                }
             }
 
             @Override
