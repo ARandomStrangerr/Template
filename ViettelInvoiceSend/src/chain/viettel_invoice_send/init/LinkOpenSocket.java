@@ -31,7 +31,7 @@ class LinkOpenSocket extends Link<InitChain> {
         ViettelInvoiceSend.getInstance().setSocket(socket);
         Runnable runnable = new ClientSocketHandler(socket, chain.name);
         new Thread(runnable).start();
-        System.out.printf("Success connect to DataStream at %s:%d", chain.address.getHostAddress(), chain.port);
+        System.out.printf("Success connect to DataStream at %s:%d\n", chain.address.getHostAddress(), chain.port);
         return false;
     }
 }
