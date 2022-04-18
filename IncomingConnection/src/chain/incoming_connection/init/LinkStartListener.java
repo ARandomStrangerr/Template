@@ -2,7 +2,7 @@ package chain.incoming_connection.init;
 
 import chain.Link;
 import memorable.IncomingConnection;
-import runnable.data_stream.ListenerHandler;
+import runnable.incoming_connection.ListenerHandler;
 import socket.Listener;
 import socket.StorageType;
 

@@ -2,7 +2,7 @@ package chain.incoming_connection.init;
 
 import chain.Link;
 import memorable.IncomingConnection;
-import runnable.data_stream.ClientSocketHandler;
+import runnable.incoming_connection.ClientSocketHandler;
 import socket.Socket;
 
 import java.io.IOException;
