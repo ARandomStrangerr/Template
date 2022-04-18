@@ -7,16 +7,42 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 public class IncomingConnectionStarter {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         new InitChain(InetAddress.getByName("localhost"),
                 9999,
                 10000,
                 "IncomingConnection",
                 3000)
                 .resolve();
+    }
+}
+
+class TestViettelInvoiceSend {
+    public static void main(String[] args) throws Exception {
+        Socket socket = new Socket(InetAddress.getByName("localhost"), 10000);
+        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("job", "SendInvoice");
+        jsonObject.addProperty("clientId", "3C:7C:3F:2A:07:61");
+        jsonObject.addProperty("username", "0101814245");
+        jsonObject.addProperty("password", "123456aA@");
+        jsonObject.addProperty("file", Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("/Users/thanhdo/Downloads/try.xlsx"))));
+
+        bw.write(jsonObject.toString());
+        bw.newLine();
+        bw.flush();
+
+        Gson gson = new Gson();
+        for (String line = br.readLine(); line!= null; line = br.readLine()){
+            System.out.println(line);
+        }
     }
 }
 
@@ -27,7 +53,7 @@ class TestViettelInvoiceGet {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("job","GetInvoice");
+        jsonObject.addProperty("job", "GetInvoice");
         jsonObject.addProperty("clientId", "3C:7C:3F:2A:07:61");
         jsonObject.addProperty("username", "0101183303-007");
         jsonObject.addProperty("password", "123456aA@");
