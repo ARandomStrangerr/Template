@@ -16,6 +16,7 @@ public class ResolveChain extends Chain {
     protected void chainConstruction() {
         chain.add(new LinkMaterializeExcelFile(this));
         chain.add(new LinkReadExcelFile(this));
+        chain.add(new LinkSendInvoice(this));
         chain.add(new LinkSendToDataStream(this));
     }
 }
