@@ -25,6 +25,12 @@ class LinkJobTranslate extends Link<ResolveChain> {
              case "GetInvoice":
                  toArray.add("ViettelInvoiceGet");
                  break;
+             case "SendInvoice":
+                 toArray.add("ViettelInvoiceSend");
+                 break;
+             default:
+                 chain.getProcessObject().addProperty("error", "Không có công việc nào tương ứng");
+                 return false;
          }
          chain.getProcessObject().add("to", toArray);
          return true;
