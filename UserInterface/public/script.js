@@ -91,12 +91,12 @@ function startSocket(){
     toggleRedNotification("Địa chỉ máy chủ chưa được điền");
     return;
   }
-  const number = number.value;
-  if (number == ""){
+  const port = portInput.value;
+  if (port == ""){
     toggleRedNotification("Cổng đăng nhập chưa được điền");
     return;
   }
-  socket = new Socket(address, Number(number));
+  socket = new socketClass(address, Number(port));
 }
 async function boostup(){
   await fileSystem.readFile(configFile, 'utf8', (err, data) => {
