@@ -1,0 +1,10 @@
+{
+    body:{
+        start: <int: starting number>
+        end: <int: ending number>
+        username: <string: username to login into viettel service>
+        password: <string: password to login into viettel service>
+        invoiceSeries: <string: it is terminology, dont even understand, but it must be included>
+        templateCode: <string: it is terminology, dont even understand, but it must be included>
+    }
+}
