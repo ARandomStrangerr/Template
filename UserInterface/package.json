@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "electron-packager": "^15.4.0"
+  }
+}
