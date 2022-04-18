@@ -86,35 +86,12 @@ class LinkReadExcelFile extends Link<ResolveChain> {
                 generalInvoiceObj = new JsonObject();
                 //invoice type
                 tempStr = invoice.get(0).trim();
-                //try to catch invalid invoice type parameter from the given Excel
-                if (tempStr.equals("01GTKT") ||
-                        tempStr.equals("02GTTT") ||
-                        tempStr.equals("07KPTQ") ||
-                        tempStr.equals("03XKNB") ||
-                        tempStr.equals("04HGDL") ||
-                        tempStr.equals("01BLP"))
-                    generalInvoiceObj.addProperty("invoiceType",
-                            tempStr);
-                else {
-                    chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", "Loại mã hoá đơn không chính xác ở dòng số " + rowIndex);
-                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
-                    return false;
-                }
                 generalInvoiceObj.addProperty("invoiceType",
                         tempStr);
                 //invoice series
                 tempStr = invoice.get(1).trim();
-                //try to catch invalid invoice series parameter from the given Excel
-                if (Pattern.matches("[A-Z][A-Z]/[0-9][0-9][A-Z]", tempStr))
-                    generalInvoiceObj.addProperty("invoiceSeries",
-                            tempStr);
-                else {
-                    chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", "Loại mã hoá đơn không chính xác " + rowIndex);
-                    System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice series at index " + rowIndex);
-                    return false;
-                }
+                generalInvoiceObj.addProperty("invoiceSeries",
+                        tempStr);
                 //templateCode
                 // try to catch the invoice type number format
                 try {
@@ -125,38 +102,38 @@ class LinkReadExcelFile extends Link<ResolveChain> {
                     System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
                     return false;
                 }
-                tempStr = String.format("%s0/%03d",
+                tempStr = String.format("%s/%03d",
                         generalInvoiceObj.get("invoiceType").getAsString(),
                         tempInt);
                 generalInvoiceObj.addProperty("templateCode",
                         tempStr);
                 //issue date
-                tempStr = invoice.get(5).trim();
-                if (tempStr.isEmpty()) {
-                    invoiceDate = LocalDate.now();
-                } else {
-                    try {
-                        invoiceDate = LocalDate.parse(tempStr, DateTimeFormatter.ofPattern("yyyy\\MM\\dd"));
-                    } catch (DateTimeParseException e) {
-                        chain.getProcessObject().get("body").getAsJsonObject()
-                                .addProperty("response", "Định dạng ngày không chính xác ở dòng " + rowIndex);
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-                if (biggestDate == null)
-                    biggestDate = invoiceDate;
-                if (invoiceDate.compareTo(biggestDate) < 0) {
-                    chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", "Ngày lập hóa đơn sau không được nhỏ hơn số hóa đơn trước ở dòng " + rowIndex);
-                    return false;
-                } else if (invoiceDate.compareTo(currentDate) > 0) {
-                    chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", "Ngày lập hóa đơn không được lớn hơn ngày hôm nay ở dòng " + rowIndex);
-                    return false;
-                }
-                biggestDate = invoiceDate;
-                generalInvoiceObj.addProperty("invoiceIssuedDate", invoiceDate.toString());
+//                tempStr = invoice.get(5).trim();
+//                if (tempStr.isEmpty()) {
+//                    invoiceDate = LocalDate.now();
+//                } else {
+//                    try {
+//                        invoiceDate = LocalDate.parse(tempStr, DateTimeFormatter.ofPattern("yyyy\\MM\\dd"));
+//                    } catch (DateTimeParseException e) {
+//                        chain.getProcessObject().get("body").getAsJsonObject()
+//                                .addProperty("response", "Định dạng ngày không chính xác ở dòng " + rowIndex);
+//                        e.printStackTrace();
+//                        return false;
+//                    }
+//                }
+//                if (biggestDate == null)
+//                    biggestDate = invoiceDate;
+//                if (invoiceDate.compareTo(biggestDate) < 0) {
+//                    chain.getProcessObject().get("body").getAsJsonObject()
+//                            .addProperty("response", "Ngày lập hóa đơn sau không được nhỏ hơn số hóa đơn trước ở dòng " + rowIndex);
+//                    return false;
+//                } else if (invoiceDate.compareTo(currentDate) > 0) {
+//                    chain.getProcessObject().get("body").getAsJsonObject()
+//                            .addProperty("response", "Ngày lập hóa đơn không được lớn hơn ngày hôm nay ở dòng " + rowIndex);
+//                    return false;
+//                }
+//                biggestDate = invoiceDate;
+//                generalInvoiceObj.addProperty("invoiceIssuedDate", invoiceDate.toString());
                 //adjustment type
                 tempInt = Integer.parseInt(invoice.get(3).trim());
                 switch (tempInt) {
