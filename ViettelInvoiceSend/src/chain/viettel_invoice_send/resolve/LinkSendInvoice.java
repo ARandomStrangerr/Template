@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import memorable.ViettelInvoiceSend;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -98,14 +99,29 @@ public class LinkSendInvoice extends Link<ResolveChain> {
                 e.printStackTrace();
                 return false;
             }
+            System.out.println(returnData);
             // convert the input into json object
             JsonObject returnObject = gson.fromJson(returnData, JsonObject.class);
             // analyze the received message to see if the other end unhappy with anything
             if (!returnObject.get("description").isJsonNull()) {
                 System.err.println("The send data is invalid");
-                chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", returnObject.get("description").getAsString() + " tại hóa đơn ở dòng số " + iterationNumber);
+                chain.getProcessObject().remove("body");
+                chain.getProcessObject().addProperty("error", returnObject.get("description").getAsString() + " tại hóa đơn ở dòng số " + iterationNumber);
                 return false;
+            } else {
+                JsonObject updateObject = new JsonObject(),
+                        updateHeader = new JsonObject();
+                JsonArray toArray = new JsonArray();
+                updateObject.add("header", updateHeader);
+                updateObject.add("body", returnObject);
+                updateHeader.addProperty("from", ViettelInvoiceSend.getInstance().getName());
+                updateHeader.add("instance", chain.getProcessObject().get("header").getAsJsonObject().get("instance"));
+                toArray.add("IncomingConnection");
+                updateHeader.add("to", toArray);
+                updateHeader.add("clientId", chain.getProcessObject().get("header").getAsJsonObject().get("clientId"));
+                updateHeader.addProperty("status", true);
+                updateHeader.addProperty("decrease", false );
+                updateHeader.addProperty("terminate", false);
             }
             // add the return info
             returnInfo.add(returnObject);
