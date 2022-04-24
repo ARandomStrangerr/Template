@@ -9,13 +9,13 @@ const getInvoicePane = document.querySelector('#get-invoice-pane');
 const getInvoiceSelector = document.querySelector('#get-invoice-selector');
 const sendInvoicePane = document.querySelector('#send-invoice-pane');
 const sendInvoiceSelector = document.querySelector('#send-invoice-selector');
-const chooseStorageFolderButton = document.querySelector('#choose-folder-button');
 
 const usernameInput = document.querySelector('#username-input');
 const passwordInput = document.querySelector('#password-input');
 const addressInput = document.querySelector('#address-input');
 const portInput = document.querySelector('#port-input');
 const invoiceStorageFolderInput = document.querySelector('#invoice-storage-folder-input');
+// const chooseStorageFolderButton = document.querySelector('#choose-folder-button');
 const saveInfoButton = document.querySelector('#store-info-button');
 
 const greenNotification = document.querySelector("#green-notification");
@@ -98,19 +98,6 @@ function startSocket(){
     return;
   }
   socket = new socketClass(address, Number(port));
-}
-async function handleDirectoryEntry( dirHandle, out ) {
-  for await (const entry of dirHandle.values()) {
-    if (entry.kind === "file"){
-      const file = await entry.getFile();
-      out[ file.name ] = file;
-    }
-    if (entry.kind === "directory") {
-      const newHandle = await dirHandle.getDirectoryHandle( entry.name, { create: false } );
-      const newOut = out[ entry.name ] = {};
-      await handleDirectoryEntry( newHandle, newOut );
-    }
-  }
 }
 async function boostup(){
   await fileSystem.readFile(configFile, 'utf8', (err, data) => {
@@ -195,10 +182,6 @@ chooseExcelFilePathButton.addEventListener('click', function() {
     excelFilePathInput.value = fileChooser.files[0].path;
   }
   fileChooser.click();
-});
-chooseStorageFolderButton.addEventListener('click', async function() {
-  const dirChooser = document.createElement("input");
-  dirChooser.type = 'file';
 });
 sendInvoiceButton.addEventListener('click', function(){
   username = usernameInput.value;
