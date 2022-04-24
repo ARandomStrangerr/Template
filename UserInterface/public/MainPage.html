@@ -30,17 +30,19 @@
       </ul>
     </div>
     <!-- right side -->
+    <!-- send invoice -->
     <div class="right-pane non-active-pane" id="send-invoice-pane">
       <h1>Tạo hoá đơn từ tệp tin Excel</h1>
       <div>
         Đường dẫn đến tệp tin Excel
         <input type="text" class="general-input" id="excel-file-input">
-        <a class="general-button" id='send-invoice-button'>Chọn</a>
+        <a class="general-button" id='choose-excel-file-button'>Chọn</a>
       </div>
       <div>
-        <a class="general-button">Gửi thông tin</a>
+        <a class="general-button" id="send-invoice-button">Gửi thông tin</a>
       </div>
     </div>
+    <!-- get invoice -->
     <div class="right-pane non-active-pane" id="get-invoice-pane">
       <h1>Lấy hoá đơn tải về theo giải</h1>
       <div>
@@ -61,9 +63,11 @@
         <a class="general-button" id="start-download-invoice-button">Tải hoá đơn về</a>
       </div>
     </div>
+    <!-- search innvoice -->
     <div class="right-pane non-active-pane" id="search-invoice-pane">
       <h1>Tìm kiếm hoá đơn theo ngày</h1>
     </div>
+    <!-- setting -->
     <div class="right-pane non-active-pane" id="setting-pane">
       <h1>Cài đặt</h1>
       <div>

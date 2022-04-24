@@ -23,12 +23,12 @@ module.exports = class {
     let sendJsonObject = {
       job: 'GetInvoice',
       clientId: this.#macAddress,
-      username: "0101183303-007",
-      password: "123456aA@",
-      invoiceSeries: "AA/20E",
-      templateCode: "02GTTT0/001",
-      start: 11037,
-      end: 11039
+      username: username,
+      password: password,
+      invoiceSeries: invoiceSeries,
+      templateCode: templateCode,
+      start: start,
+      end: end
     };
     const socket = new this.#netModule.Socket();
     socket.connect(10000, '127.0.0.1', () => {

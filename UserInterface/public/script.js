@@ -9,7 +9,7 @@ const getInvoicePane = document.querySelector('#get-invoice-pane');
 const getInvoiceSelector = document.querySelector('#get-invoice-selector');
 const sendInvoicePane = document.querySelector('#send-invoice-pane');
 const sendInvoiceSelector = document.querySelector('#send-invoice-selector');
-const chooseFolderButton = document.querySelector('#choose-folder-button');
+const chooseStorageFolderButton = document.querySelector('#choose-folder-button');
 
 const usernameInput = document.querySelector('#username-input');
 const passwordInput = document.querySelector('#password-input');
@@ -22,7 +22,8 @@ const greenNotification = document.querySelector("#green-notification");
 const yellowNotification = document.querySelector('#yellow-notification');
 const redNotification = document.querySelector('#red-notification');
 
-const excelFilePathInput = document.querySelector('#excel-file-path');
+const excelFilePathInput = document.querySelector('#excel-file-input');
+const chooseExcelFilePathButton = document.querySelector('#choose-excel-file-button');
 const sendInvoiceButton = document.querySelector('#send-invoice-button');
 
 const invoiceSeriesInput = document.querySelector('#invoice-series-input');
@@ -97,6 +98,19 @@ function startSocket(){
     return;
   }
   socket = new socketClass(address, Number(port));
+}
+async function handleDirectoryEntry( dirHandle, out ) {
+  for await (const entry of dirHandle.values()) {
+    if (entry.kind === "file"){
+      const file = await entry.getFile();
+      out[ file.name ] = file;
+    }
+    if (entry.kind === "directory") {
+      const newHandle = await dirHandle.getDirectoryHandle( entry.name, { create: false } );
+      const newOut = out[ entry.name ] = {};
+      await handleDirectoryEntry( newHandle, newOut );
+    }
+  }
 }
 async function boostup(){
   await fileSystem.readFile(configFile, 'utf8', (err, data) => {
@@ -174,6 +188,18 @@ redNotification.addEventListener('click', function() {
   displayingNotification = null;
 });
 
+chooseExcelFilePathButton.addEventListener('click', function() {
+  const fileChooser = document.createElement('input');
+  fileChooser.type = 'file';
+  fileChooser.onchange = () => {
+    excelFilePathInput.value = fileChooser.files[0].path;
+  }
+  fileChooser.click();
+});
+chooseStorageFolderButton.addEventListener('click', async function() {
+  const dirChooser = document.createElement("input");
+  dirChooser.type = 'file';
+});
 sendInvoiceButton.addEventListener('click', function(){
   username = usernameInput.value;
   if (username == ""){
@@ -182,8 +208,8 @@ sendInvoiceButton.addEventListener('click', function(){
   }
   password = passwordInput.value;
   if (password == ""){
-    toggleRedNotification("Mật khẩu chưa được điền, khai báo ở phần Cài đặt")
-    return
+    toggleRedNotification("Mật khẩu chưa được điền, khai báo ở phần Cài đặt");
+    return;
   }
   if (!socket) startSocket();
 });

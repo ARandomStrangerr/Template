@@ -1,1 +1,3 @@
 FC:34:97:C2:5A:2A=Authentication,ViettelInvoiceGet
+3C:7C:3F:2A:07:61=ViettelInvoiceGet,ViettelInvoiceSend
+f0:18:98:7b:72:f2=ViettelInvoiceGet
