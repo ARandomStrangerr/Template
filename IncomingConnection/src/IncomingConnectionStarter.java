@@ -13,11 +13,63 @@ import java.util.Base64;
 
 public class IncomingConnectionStarter {
     public static void main(String[] args) throws Exception {
-        new InitChain(InetAddress.getByName("localhost"),
-                9999,
-                10000,
-                "IncomingConnection",
-                3000)
+        InetAddress hostAddress;
+        int dataStreamPort, incomingConnectionPort, timeout;
+        String moduleName;
+
+        try {
+            hostAddress = InetAddress.getByName(args[0]);
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("missing host address");
+            e.printStackTrace();
+            return;
+        }
+        try {
+            dataStreamPort = Integer.parseInt(args[1]);
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("Missing data stream port");
+            e.printStackTrace();
+            return;
+        } catch (NumberFormatException e) {
+            System.err.println("given data for data stream module port is not an integer");
+            e.printStackTrace();
+            return;
+        }
+        try {
+            incomingConnectionPort = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            System.err.println("given data for incoming connection module port is not an integer");
+            e.printStackTrace();
+            return;
+        }catch (IndexOutOfBoundsException e){
+            System.err.println("missing argument for incoming connection port");
+            e.printStackTrace();
+            return;
+        }
+        try {
+            moduleName = args[3];
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("missing argument for name of this module");
+            e.printStackTrace();
+            return;
+        }
+        try {
+            timeout = Integer.parseInt(args[4]);
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("missing argument for timeout connection");
+            e.printStackTrace();
+            return;
+        } catch (NumberFormatException e) {
+            System.err.println("given data for timeout is not a number");
+            e.printStackTrace();
+            return;
+        }
+
+        new InitChain(hostAddress,
+                dataStreamPort,
+                incomingConnectionPort,
+                moduleName,
+                timeout)
                 .resolve();
     }
 }
@@ -40,7 +92,7 @@ class TestViettelInvoiceSend {
         bw.flush();
 
         Gson gson = new Gson();
-        for (String line = br.readLine(); line!= null; line = br.readLine()){
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
             System.out.println(line);
         }
     }
