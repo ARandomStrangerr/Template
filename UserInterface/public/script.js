@@ -175,6 +175,20 @@ redNotification.addEventListener('click', function() {
   displayingNotification = null;
 });
 
+invoiceStorageFolderInput.addEventListener('change', function (){
+  if (invoiceStorageFolderInput.value.length != 0){
+    if (invoiceStorageFolderInput.value[invoiceStorageFolderInput.length - 1] !== '\\' || invoiceStorageFolderInput.value[invoiceStorageFolderInput.length - 1] !== "/"
+    ){
+      if (process.platform === "win32"){
+        invoiceStorageFolderInput.value = invoiceStorageFolderInput.value + "\\";
+      } else {
+        invoiceStorageFolderInput.value = invoiceStorageFolderInput.value + "/";
+      }
+    }
+  }
+
+});
+
 chooseExcelFilePathButton.addEventListener('click', function() {
   const fileChooser = document.createElement('input');
   fileChooser.type = 'file';
