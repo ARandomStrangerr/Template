@@ -30,7 +30,7 @@ class LinkStartListener extends Link<InitChain> {
         }
         DataStream.getInstance().listener = listener;
         ListenerHandler listenerRunnable = new ListenerHandler(listener, chain.timeout);
-        System.out.printf("Listener is opened at port %d", chain.port);
+        System.out.printf("Listener is opened at port %d\n", chain.port);
         new Thread(listenerRunnable).start();
         return true;
     }
