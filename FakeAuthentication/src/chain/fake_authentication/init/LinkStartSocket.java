@@ -30,6 +30,7 @@ public class LinkStartSocket extends Link<InitChain> {
         }
         FakeAuthentication.getInstance().setSocket(socket);
         new Thread(new ClientSocketHandler(socket, chain.moduleName)).start();
+        System.out.printf("Successfully connect to DataStream at %s:%d\n", chain.hostAddress.getHostAddress(), chain.port);
         return true;
     }
 }
