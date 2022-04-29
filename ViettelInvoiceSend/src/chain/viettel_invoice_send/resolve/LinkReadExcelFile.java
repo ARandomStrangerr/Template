@@ -3,16 +3,16 @@ package chain.viettel_invoice_send.resolve;
 import chain.Link;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import file_operation.ExcelFile;
 import memorable.ViettelInvoiceSend;
 import org.apache.poi.hssf.OldExcelFormatException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 class LinkReadExcelFile extends Link<ResolveChain> {
     LinkReadExcelFile(ResolveChain chain) {
@@ -30,10 +30,24 @@ class LinkReadExcelFile extends Link<ResolveChain> {
         List<List<String>> rawInvoiceList;
         // read the Excel file
         try {
-            rawInvoiceList = ExcelFile.getInstance().read(chain.excelFile);
+            WorkbookFactory.addProvider(new HSSFWorkbookFactory());
+            WorkbookFactory.addProvider(new XSSFWorkbookFactory());
+            rawInvoiceList = new LinkedList<>();
+            Workbook workbook = WorkbookFactory.create(chain.excelFile);
+            Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter dataFormatter = new DataFormatter();
+            for (int i = 0; i <= sheet.getLastRowNum(); ++i) {
+                Row row = sheet.getRow(i);
+                List<String> cells = new LinkedList<>();
+                for (int j = 0; j <= row.getLastCellNum(); ++j) {
+                    Cell cell = row.getCell(j);
+                    cells.add(dataFormatter.formatCellValue(cell));
+                }
+                rawInvoiceList.add(cells);
+            }
+            workbook.close();
         } catch (IOException e) {
-            chain.getProcessObject().get("body").getAsJsonObject()
-                    .addProperty("response", "Tệp tin Excel đính kèm không hoạt động, vui lòng xem lại");
+            chain.getProcessObject().addProperty("error", "Tệp tin Excel đính kèm không hoạt động, vui lòng xem lại");
             System.err.println("Cannot read the excel file, probably somebody else is reading it");
             e.printStackTrace();
             return false;
