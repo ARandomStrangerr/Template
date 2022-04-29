@@ -28,7 +28,7 @@ class LinkReformatJson extends Link<ResolveChain> {
         header.addProperty("from", IncomingConnection.getInstance().getName());
         header.addProperty("instance", IncomingConnection.getInstance().getId());
         header.add("clientId", chain.getProcessObject().remove("clientId"));
-        header.add("to", chain.getProcessObject().remove("to"));
+        header.add("job", chain.getProcessObject().remove("job"));
         header.addProperty("status", true);
         header.addProperty("decrease", false);
         // separate and add property for the body of the object
