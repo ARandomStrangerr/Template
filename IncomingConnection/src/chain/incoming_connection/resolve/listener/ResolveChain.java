@@ -14,8 +14,8 @@ public class ResolveChain extends Chain {
 
     @Override
     protected void chainConstruction() {
-        chain.add(new LinkJobTranslate(this));
         chain.add(new LinkReformatJson(this));
+        chain.add(new LinkJobTranslate(this));
         chain.add(new LinkGetPrivilege(this, IncomingConnection.getInstance().getThreadTable()));
         chain.add(new LinkSendToDataStream(this));
     }

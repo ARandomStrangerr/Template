@@ -19,7 +19,7 @@ class LinkJobTranslate extends Link<ResolveChain> {
       */
      @Override
      protected boolean resolve() {
-         String requestJob = chain.getProcessObject().remove("job").getAsString();
+         String requestJob = chain.getProcessObject().get("header").getAsJsonObject().remove("job").getAsString().trim();
          JsonArray toArray = new JsonArray();
          switch (requestJob){
              case "GetInvoice":
@@ -32,7 +32,7 @@ class LinkJobTranslate extends Link<ResolveChain> {
                  chain.getProcessObject().addProperty("error", "Không có công việc nào tương ứng");
                  return false;
          }
-         chain.getProcessObject().add("to", toArray);
+         chain.getProcessObject().get("header").getAsJsonObject().add("to", toArray);
          return true;
      }
  }
