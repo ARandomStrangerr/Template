@@ -10,9 +10,12 @@ import java.util.Base64;
 
 public class ViettelInvoiceGet {
     public static void main(String[] args) throws Exception{
-        new InitChain(InetAddress.getByName("localhost"),
-                9999,
-                "ViettelInvoiceGet")
+        InetAddress hostAddress = InetAddress.getByName(args[0]);
+        int port = Integer.parseInt(args[1]);
+        String moduleName = args[2];
+        new InitChain(hostAddress,
+                port,
+                moduleName)
                 .resolve();
     }
 }
