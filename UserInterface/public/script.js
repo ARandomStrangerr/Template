@@ -72,7 +72,7 @@ function storeInfomation(){
   const templateCode = templateCodeInput.value;
   const content = `username:${username}\n`
   + `password:${password}\n`
-  + `addres:${address}\n`
+  + `address:${address}\n`
   + `port:${port}\n`
   + `storageFolder:${storageFolder}\n`
   + `invoiceSeries:${invoiceSeries}\n`
@@ -97,7 +97,12 @@ function startSocket(){
     toggleRedNotification("Cổng đăng nhập chưa được điền");
     return;
   }
-  socket = new socketClass(address, Number(port));
+  try{
+    socket = new socketClass(address, Number(port), toggleGreenNotification, toggleYellowNotification, toggleRedNotification);
+  } catch (e){
+    console.log(e);
+    toggleRedNotification('Không thể nhận diện được MAC address, vui lòng liên hệ với người viết phần mềm');
+  }
 }
 async function boostup(){
   await fileSystem.readFile(configFile, 'utf8', (err, data) => {
@@ -121,8 +126,14 @@ async function boostup(){
         case 'port':
         portInput.value = arr[1];
         break;
-        case 'storage_folder':
+        case 'storageFolder':
         invoiceStorageFolderInput.value = arr[1];
+        break;
+        case 'invoiceSeries':
+        invoiceSeriesInput.value = arr[1];
+        break;
+        case 'templateCode':
+        templateCodeInput.value = arr[1];
         break;
       }
     }
@@ -186,7 +197,6 @@ invoiceStorageFolderInput.addEventListener('change', function (){
       }
     }
   }
-
 });
 
 chooseExcelFilePathButton.addEventListener('click', function() {
@@ -198,17 +208,23 @@ chooseExcelFilePathButton.addEventListener('click', function() {
   fileChooser.click();
 });
 sendInvoiceButton.addEventListener('click', function(){
-  username = usernameInput.value;
+  username = usernameInput.value.trim();
   if (username == ""){
     toggleRedNotification("Tên người dùng chưa được điền, khai báo ở phần Cài đặt");
     return;
   }
-  password = passwordInput.value;
+  password = passwordInput.value.trim();
   if (password == ""){
     toggleRedNotification("Mật khẩu chưa được điền, khai báo ở phần Cài đặt");
     return;
   }
+  excelFilePath = excelFilePathInput.value.trim();
+  if (excelFilePath == ""){
+    toggleRedNotification("Đường dẫn tệp tin excel bị bỏ trống");
+    return;
+  }
   if (!socket) startSocket();
+  socket.sendInvoice(username, password, excelFilePath);
 });
 startDownloadInvoiceButton.addEventListener('click', function() {
   let username = usernameInput.value;
