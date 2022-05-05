@@ -106,12 +106,12 @@ class TestViettelInvoiceGet {
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("job", "GetInvoice");
-        jsonObject.addProperty("clientId", "3C:7C:3F:2A:07:61");
+        jsonObject.addProperty("clientId", "f0:18:98:7b:72:f2");
         jsonObject.addProperty("username", "0101183303-007");
         jsonObject.addProperty("password", "123456aA@");
         jsonObject.addProperty("templateCode", "02GTTT0/001");
         jsonObject.addProperty("invoiceSeries", "AA/20E");
-        jsonObject.addProperty("start", 11037);
+        jsonObject.addProperty("start", 11039);
         jsonObject.addProperty("end", 11039);
 
         bw.write(jsonObject.toString());

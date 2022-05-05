@@ -3,7 +3,7 @@
     "electron": "^18.1.0",
     "electron-packager": "^15.4.0"
   },
-  "name": "app",
+  "name": "hoa_don_dien_tu",
   "version": "1.0.0",
   "main": "starter.js",
   "dependencies": {
@@ -153,5 +153,5 @@
   },
   "author": "ARandomStangerr",
   "license": "ISC",
-  "description": ""
+  "description": "crap programing"
 }
