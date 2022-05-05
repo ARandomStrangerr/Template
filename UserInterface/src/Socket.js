@@ -13,10 +13,10 @@ module.exports = class {
     this.#fileSystem = require('fs');
     this.#port = port;
     this.#address = address;
-    this.#macAddress = require('os').networkInterfaces().en0[0].mac;
     this.#greenNotification = greenNotification;
     this.#yellowNotification = yellowNotification;
     this.#redNotification = redNotification;
+    this.#macAddress = this.#getMAC();
   }
 
   getInvoice(username, password, invoiceSeries, templateCode, start, end, storageFolder){
@@ -31,10 +31,16 @@ module.exports = class {
       end: end
     };
     const socket = new this.#netModule.Socket();
-    socket.connect(10000, '127.0.0.1', () => {
+    socket.connect(this.#port, this.#address, () => {
       console.log(`Successfully open TCP connection to ${this.#address}:${this.#port}`);
       socket.write(`${JSON.stringify(sendJsonObject)}\r\n`);
     });
+    socket.on('error', (err) => {
+      console.log(err);
+      if (String(err).includes("ECONNREFUSED")){
+        this.#redNotification("Không kết nối được đến máy chủ");
+      }
+    })
     let trunkage = "";
     socket.on('data', (data) => {
       data = String(data).trim();
@@ -65,27 +71,47 @@ module.exports = class {
 
   async sendInvoice(username, password, excelFilePath){
     let sendObject = {
-      job: 'ViettelInvoiceSend',
+      job: 'SendInvoice',
       username: username,
-      password: password
+      password: password,
+      clientId: this.#macAddress,
+      file: fileSystem.readFileSync(excelFilePath, {encoding:'base64', flag:'r'})
     }
-    await fileSystem.readFile(excelFilePath, 'base64', (err, data) => {
-      if(err){
-        console.log(err);
-        return;
-      }
-      sendObject.file = data;
-    });
+    console.log(sendObject);
     const socket = new this.#netModule.Socket();
     socket.connect(this.#port, this.#address, () => {
+      console.log(`Successfully open TCP connection to ${this.#address}:${this.#port}`);
       socket.write(`${JSON.stringify(sendObject)}\r\n`);
     });
-    socket.on('data', function(data) {
-      data = Json.parse(data);
-      yellowNotification(data.response);
+    socket.on('error', (err) => {
+      console.log(err);
+      if (String(err).includes("ECONNREFUSED")){
+        this.#redNotification("Không kết nối được đến máy chủ");
+      }
+    });
+    socket.on('data', (data) => {
+      data = JSON.parse(data);
+      console.log(data);
+      if(data.error){
+        this.#redNotification(data);
+      } else {
+        this.#yellowNotification(data);
+      }
     });
     socket.on("close", () => {
       console.log(`Connection to ${this.#address}:${this.#port} is closed`);
     });
+  }
+
+  #getMAC(){
+    const interfaces = require('os').networkInterfaces();
+    for (const i in interfaces){
+      for (const ele of interfaces[i]){
+        if (ele.mac !== '00:00:00:00:00:00' && ele.mac !== "ff:ff:ff:ff:ff:ff"){
+          return ele.mac;
+        }
+      }
+    }
+    return null;
   }
 }
