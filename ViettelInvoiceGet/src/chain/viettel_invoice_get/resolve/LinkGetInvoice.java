@@ -37,9 +37,9 @@ class LinkGetInvoice extends Link<ResolveChain> {
             chain.getProcessObject().addProperty("error", "Không tìm thấy trường số bắt đầu");
             e.printStackTrace();
             return false;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.err.println("Start number is not a number");
-            chain.getProcessObject().addProperty("error","Trường số bắt đầu không phải định dạng số");
+            chain.getProcessObject().addProperty("error", "Trường số bắt đầu không phải định dạng số");
             e.printStackTrace();
             return false;
         }
@@ -50,7 +50,7 @@ class LinkGetInvoice extends Link<ResolveChain> {
             chain.getProcessObject().addProperty("error", " Vấn đề với số kết thúc");
             e.printStackTrace();
             return false;
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.err.println("End number is invalid");
             chain.getProcessObject().addProperty("error", "Trường số kết thúc không phải định dạng số");
             e.printStackTrace();
@@ -142,6 +142,14 @@ class LinkGetInvoice extends Link<ResolveChain> {
                 e.printStackTrace();
                 continue;
             }
+            // check the return message from the server.
+            if (returnObject.has("errorCode") && !returnObject.get("errorCode").isJsonNull()) {
+                System.err.printf("Error occurred while trying to get invoice for client %s - %s\n", username, returnObject.get("description"));
+                chain.getProcessObject().add("error", returnObject.get("description"));
+                return false;
+            } else {
+                System.out.printf("Successfully get invoice for %s - %s\n", username, returnObject.get("fileName"));
+            }
             // send the data back immediately as an update after successfully receive it.
             JsonObject updateObject = new JsonObject(),
                     headerUpdateObject = new JsonObject(),
@@ -151,7 +159,7 @@ class LinkGetInvoice extends Link<ResolveChain> {
             headerUpdateObject.addProperty("from", ViettelInvoiceGet.getInstance().getModuleName());
             headerUpdateObject.add("instance", header.get("instance"));
             headerUpdateObject.add("clientId", header.get("clientId"));
-            headerUpdateObject.add("to",toArray);
+            headerUpdateObject.add("to", toArray);
             headerUpdateObject.addProperty("status", true);
             headerUpdateObject.addProperty("decrease", false);
             headerUpdateObject.addProperty("terminate", false);
@@ -164,7 +172,6 @@ class LinkGetInvoice extends Link<ResolveChain> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.printf("Successfully get the invoice %s for tax id %s\n", returnObject.get("fileName"), username);
         }
         return true;
     }
