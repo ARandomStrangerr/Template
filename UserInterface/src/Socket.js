@@ -69,7 +69,8 @@ module.exports = class {
     });
   }
 
-  async sendInvoice(username, password, excelFilePath){
+  sendInvoice(username, password, excelFilePath){
+    // create the send object
     let sendObject = {
       job: 'SendInvoice',
       username: username,
@@ -77,25 +78,30 @@ module.exports = class {
       clientId: this.#macAddress,
       file: fileSystem.readFileSync(excelFilePath, {encoding:'base64', flag:'r'})
     }
-    console.log(sendObject);
+    // create socket according to the given address / port
     const socket = new this.#netModule.Socket();
+    // upon Successfully connect the the host, print out a message and write the the data to the host
     socket.connect(this.#port, this.#address, () => {
       console.log(`Successfully open TCP connection to ${this.#address}:${this.#port}`);
       socket.write(`${JSON.stringify(sendObject)}\r\n`);
     });
+
+    // action to take on error
     socket.on('error', (err) => {
-      console.log(err);
-      if (String(err).includes("ECONNREFUSED")){
+      if (String(err).includes("ECONNREFUSED")){ // when cannot connect to host
         this.#redNotification("Không kết nối được đến máy chủ");
       }
     });
+
+    // action to take when receive data
     socket.on('data', (data) => {
       data = JSON.parse(data);
-      console.log(data);
       if(data.error){
-        this.#redNotification(data);
-      } else {
-        this.#yellowNotification(data);
+        this.#redNotification(data.error);
+      } else if (data.update){
+        this.#yellowNotification(data.update);
+      } else if (data.response){
+        this.#greenNotification(data.response);
       }
     });
     socket.on("close", () => {
