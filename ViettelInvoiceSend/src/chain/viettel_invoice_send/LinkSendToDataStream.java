@@ -19,6 +19,8 @@ public class LinkSendToDataStream extends Link {
      */
     @Override
     protected boolean resolve() {
+        chain.getProcessObject().get("header").getAsJsonObject().addProperty("decrease", false);
+        chain.getProcessObject().get("header").getAsJsonObject().addProperty("terminate", true);
         try {
             ViettelInvoiceSend.getInstance().getSocket().write(chain.getProcessObject().toString());
         }catch (IOException e){
