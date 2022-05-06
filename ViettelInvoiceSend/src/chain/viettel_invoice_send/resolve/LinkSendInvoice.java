@@ -28,9 +28,9 @@ public class LinkSendInvoice extends Link<ResolveChain> {
     protected boolean resolve() {
         // make authentication
         String username = chain.getProcessObject().get("body").getAsJsonObject()
-                .get("username").getAsString(),
+                .remove("username").getAsString(),
                 password = chain.getProcessObject().get("body").getAsJsonObject()
-                        .get("password").getAsString(),
+                        .remove("password").getAsString(),
                 verification = "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
         // loop to send each request
@@ -38,6 +38,7 @@ public class LinkSendInvoice extends Link<ResolveChain> {
         int iterationNumber = 0;
         JsonArray returnInfo = new JsonArray();
         for (JsonElement element : chain.getProcessObject().get("body").getAsJsonObject().get("send").getAsJsonArray()) {
+            iterationNumber++;
             // create the connection to the server
             HttpURLConnection con;
             try {
@@ -48,9 +49,9 @@ public class LinkSendInvoice extends Link<ResolveChain> {
                 con.setRequestProperty("Accept", "application/json");
                 con.setRequestProperty("Authorization", verification);
             } catch (IOException e) {
-                System.err.println("Cannot established connection to the dedicated address");
-                chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", "Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số " + iterationNumber);
+                System.err.printf("Likely provided username / password is incorrect for %s at %d\n", username, iterationNumber);
+                chain.getProcessObject()
+                        .addProperty("error", String.format("Đã tạo %d hoá đơn. Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số %d", iterationNumber - 1, iterationNumber));
                 e.printStackTrace();
                 return false;
             }
@@ -59,9 +60,9 @@ public class LinkSendInvoice extends Link<ResolveChain> {
             try {
                 writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
             } catch (IOException e) {
-                System.err.println("Cannot establish output stream with the address");
-                chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", "Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số " + iterationNumber);
+                System.err.printf("Cannot establish output stream with the address for %s at %d\n", username, iterationNumber);
+                chain.getProcessObject()
+                        .addProperty("error", String.format("Đã tạo %d hoá đơn. Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số %d", iterationNumber - 1, iterationNumber));
                 e.printStackTrace();
                 return false;
             }
@@ -71,9 +72,9 @@ public class LinkSendInvoice extends Link<ResolveChain> {
                 writer.newLine();
                 writer.flush();
             } catch (IOException e) {
-                System.err.println("Cannot write output to stream");
-                chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", "Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số " + iterationNumber);
+                System.err.printf("Cannot write output to stream for %s at %d\n", username, iterationNumber);
+                chain.getProcessObject()
+                        .addProperty("error", String.format("Đã tạo %d hoá đơn. Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số %d", iterationNumber - 1, iterationNumber));
                 e.printStackTrace();
                 return false;
             }
@@ -82,9 +83,9 @@ public class LinkSendInvoice extends Link<ResolveChain> {
             try {
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } catch (IOException e) {
-                System.err.println("Cannot establish input stream with the address");
-                chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", "Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số " + iterationNumber);
+                System.err.printf("Cannot establish input stream for %s at %d\n", username, iterationNumber);
+                chain.getProcessObject()
+                        .addProperty("error", String.format("Đã tạo %d hoá đơn. Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số %d", iterationNumber - 1, iterationNumber));
                 e.printStackTrace();
                 return false;
             }
@@ -93,41 +94,45 @@ public class LinkSendInvoice extends Link<ResolveChain> {
             try {
                 returnData = reader.readLine();
             } catch (IOException e) {
-                System.err.println("Cannot read from input stream");
+                System.err.printf("Cannot read from input stream for %s at %d\n", username, iterationNumber);
                 chain.getProcessObject().get("body").getAsJsonObject()
-                        .addProperty("response", "Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số " + iterationNumber);
+                        .addProperty("response", String.format("Đã tạo %d hoá đơn. Không thể kết nối đến máy chủ Viettel tại hóa đơn ở dòng số %d", iterationNumber - 1, iterationNumber));
                 e.printStackTrace();
                 return false;
             }
-            System.out.println(returnData);
             // convert the input into json object
             JsonObject returnObject = gson.fromJson(returnData, JsonObject.class);
             // analyze the received message to see if the other end unhappy with anything
-            if (!returnObject.get("description").isJsonNull()) {
-                System.err.println("The send data is invalid");
+            if (!returnObject.get("description").isJsonNull()) { // if there is an error, immediately stop the iteration then send the error back
+                System.err.printf("The send data in line %d is invalid for %s with error message: %s\n", iterationNumber, username, returnObject.get("description").getAsString());
                 chain.getProcessObject().remove("body");
-                chain.getProcessObject().addProperty("error", returnObject.get("description").getAsString() + " tại hóa đơn ở dòng số " + iterationNumber);
+                chain.getProcessObject().addProperty("error", String.format("Đã tạo %d hoá đơn. Lỗi tại dòng số %d trong tệp tin excel với tin nhắn: %s", iterationNumber - 1, iterationNumber, returnObject.get("description").getAsString()));
                 return false;
-            } else {
+            } else { // if there is no error, create a update message
+                System.out.printf("Successfully create an invoice for %s with the following property %s\n", username, returnData);
                 JsonObject updateObject = new JsonObject(),
-                        updateHeader = new JsonObject();
+                        updateHeader = new JsonObject(),
+                        updateBody = new JsonObject();
                 JsonArray toArray = new JsonArray();
                 updateObject.add("header", updateHeader);
-                updateObject.add("body", returnObject);
+                updateObject.add("body", updateBody);
                 updateHeader.addProperty("from", ViettelInvoiceSend.getInstance().getName());
                 updateHeader.add("instance", chain.getProcessObject().get("header").getAsJsonObject().get("instance"));
                 toArray.add("IncomingConnection");
                 updateHeader.add("to", toArray);
                 updateHeader.add("clientId", chain.getProcessObject().get("header").getAsJsonObject().get("clientId"));
                 updateHeader.addProperty("status", true);
-                updateHeader.addProperty("decrease", false );
+                updateHeader.addProperty("decrease", false);
                 updateHeader.addProperty("terminate", false);
+                updateBody.addProperty("update", String.format("Thành công tạo hoá đơn với số %s tại dòng số %d trong tệp tin excel", returnObject.get("result").getAsJsonObject().get("invoiceNo").getAsString(), iterationNumber));
+                try {
+                    ViettelInvoiceSend.getInstance().getSocket().write(updateObject.toString());
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
             }
-            // add the return info
-            returnInfo.add(returnObject);
         }
-        chain.getProcessObject().get("body").getAsJsonObject()
-                .add("return", returnInfo);
+        chain.getProcessObject().get("body").getAsJsonObject().addProperty("response", String.format("Thành công tạo %d hoá đơn", iterationNumber));
         return true;
     }
 }
