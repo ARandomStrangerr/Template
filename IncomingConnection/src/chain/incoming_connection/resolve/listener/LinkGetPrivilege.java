@@ -59,7 +59,7 @@ class LinkGetPrivilege extends LinkWait<ResolveChain> {
         if(!this.getAdditionalInfo().get("header").getAsJsonObject().get("status").getAsBoolean()){
             chain.getProcessObject().get("header").getAsJsonObject().addProperty("status", false);
             chain.getProcessObject().get("header").getAsJsonObject().addProperty("terminate", true);
-            chain.getProcessObject().add("error", this.getAdditionalInfo().get("error"));
+            chain.getProcessObject().addProperty("error", "Người dùng không được uỷ quyền để sử dụng phần mềm");
             return false;
         }
         return true;
