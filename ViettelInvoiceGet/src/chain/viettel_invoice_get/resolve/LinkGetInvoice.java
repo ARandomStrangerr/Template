@@ -84,7 +84,7 @@ class LinkGetInvoice extends Link<ResolveChain> {
         Socket socket = ViettelInvoiceGet.getInstance().getSocket();
         // loop to send data
         for (int index = start; index <= end; index++) { // request for each inoice
-            sendObject.addProperty("invoiceNo", String.format("%s%07d", invoiceSeries, index)); // set the invoice name to the paackage
+            sendObject.addProperty("invoiceNo", String.format("%s%d", invoiceSeries, index)); // set the invoice name to the paackage
             // step open connections to the address
             HttpURLConnection con;
             try {
