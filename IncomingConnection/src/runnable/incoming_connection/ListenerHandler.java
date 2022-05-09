@@ -98,7 +98,20 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 }
                 socket.setName(clientId);
                 // store socket
-                IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
+                try {
+                    IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
+                } catch (IllegalArgumentException e){
+                    System.err.printf("socket under the name %s is already connected to the net work, probably is under another job");
+                    e.printStackTrace();
+                    try{
+                        socket.write("{\"error\":\"hiện tại phần mềm đang sử lí một công việc khác, vui lòng đợi\"}");
+                        socket.close();
+                        System.out.printf("Module disconnected from the network %s - %d\n", socket.getName(), socket.hashCode());
+                    } catch (IOException e1){
+                        e1.printStackTrace();
+                    }
+                    return;
+                }
                 // pass the json pkg into the designated process chain
                 boolean isResolve;
                 isResolve = getResolveChain(jsonPkg).resolve();

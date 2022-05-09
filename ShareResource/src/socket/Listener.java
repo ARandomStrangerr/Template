@@ -55,7 +55,7 @@ public class Listener {
         }
     }
 
-    public void putSocket(String key, Socket socket){
+    public void putSocket(String key, Socket socket) throws IllegalArgumentException{
         this.storage.add(key, socket);
     }
 
