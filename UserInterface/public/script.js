@@ -81,8 +81,6 @@ function storeInfomation(){
     if(error){
       toggleRedNotification("Không thể ghi lại thông tin");
       console.log(error);
-    } else {
-      toggleGreenNotification('Hoàn thành ghi lại thông tin');
     }
   });
 }
@@ -268,6 +266,7 @@ startDownloadInvoiceButton.addEventListener('click', function() {
 });
 saveInfoButton.addEventListener('click', function(){
   storeInfomation();
+  toggleGreenNotification('Hoàn thành ghi lại thông tin');
 });
 
 boostup();

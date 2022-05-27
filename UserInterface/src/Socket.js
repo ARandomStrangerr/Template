@@ -70,20 +70,29 @@ module.exports = class {
   }
 
   sendInvoice(username, password, excelFilePath){
+    let file;
+    try{
+      file = fileSystem.readFileSync(excelFilePath, {encoding:'base64', flag:'r'})
+    } catch (e) {
+      redNotification(String(e));
+    }
     // create the send object
     let sendObject = {
       job: 'SendInvoice',
       username: username,
       password: password,
       clientId: this.#macAddress,
-      file: fileSystem.readFileSync(excelFilePath, {encoding:'base64', flag:'r'})
-    }
+      file: file
+    };
+
     // create socket according to the given address / port
     const socket = new this.#netModule.Socket();
     // upon Successfully connect the the host, print out a message and write the the data to the host
     socket.connect(this.#port, this.#address, () => {
       console.log(`Successfully open TCP connection to ${this.#address}:${this.#port}`);
+      this.#greenNotification("Thành công kết nối đến máy chủ");
       socket.write(`${JSON.stringify(sendObject)}\r\n`);
+      this.#yellowNotification("Đã gởi thông tin đến máy chủ");
     });
 
     // action to take on error
