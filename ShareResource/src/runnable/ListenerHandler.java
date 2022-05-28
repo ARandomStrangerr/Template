@@ -7,7 +7,14 @@ import socket.SocketVerification;
 import java.io.IOException;
 
 /**
- * handle the listener, put the accept action into an endless loop.
+ * This class receive a {@link Listener} at the constructor. The given {@link Listener} will be manage by this class.<br>
+ * step 1: it is a perpetual loop of accepting incoming {@link Socket} tried to connect to the given {@link Listener}.<br>
+ * step 2: create a new {@link Thread} to handle the accepted {@link Socket}.<br>
+ * step 3: do the verification step for the {@link Socket}, the implementation of this method will be abstract.<br>
+ * step 4: pass the socket to {@link HostSocketHandler} to handle the perpetual cycle of read and write of the socket.
+ * the implementation of this will be abstract.<br>
+ * step 5: when {@link HostSocketHandler} end of its cycle which happens due to the socket of the client end or
+ * terminated by this end, socket will be closed and remove from the collection which {@link Listener} hold<br>
  */
 public abstract class ListenerHandler implements Runnable {
     private final Listener listener;

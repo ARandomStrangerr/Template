@@ -6,8 +6,9 @@ import socket.Socket;
 
 
 /**
- * this class designed to be created as inline class.
- * that will ensure the access to the private member socket.
+ * this class designed as inline class. Just declare new as extends of {@link ListenerHandler}. the job of this class is
+ * to provide the implementation of handling socket which is accepted during the process of {@link ListenerHandler}.
+ * A class control the behaviour of {@link Socket} on the end which run {@link socket.Listener}.
  */
 public abstract class HostSocketHandler implements Runnable {
     private final Socket socket;

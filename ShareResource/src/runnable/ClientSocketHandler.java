@@ -7,6 +7,15 @@ import socket.Socket;
 
 import java.io.IOException;
 
+/**
+ * A class control the behaviour of {@link Socket} which run on the side connect to the {@link socket.Listener}.<br>
+ * step 1: write out the name of this socket.<br>
+ * step 2: read the id which sent back by the listener.<br>
+ * step 3: loop to read the request from the server. for every request receive from the server, a {@link Thread} will be
+ * spawn to handle it.<br>
+ * step 4: the perpetual loop is broke due to server disconnected to this socket or this socket disconnected itself,
+ * close the socket, and exit the progam.
+ */
 public abstract class ClientSocketHandler implements Runnable {
     private final Socket socket;
     private final String moduleName;
@@ -70,9 +79,10 @@ public abstract class ClientSocketHandler implements Runnable {
                     getRejectChain(processObject).resolve();
                 }
             };
-            // start the runnable
+            // start a runnable for each request
             new Thread(resolveRequestRunnable).start();
         }
+        //after the loop, just closse the socket.
         try {
             socket.close();
         }catch (IOException e){
