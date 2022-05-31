@@ -112,7 +112,7 @@ class LinkReadExcelFile extends Link<ResolveChain> {
                     tempInt = Integer.parseInt(invoice.get(2).trim());
                 } catch (NumberFormatException e) {
                     chain.getProcessObject().get("body").getAsJsonObject()
-                            .addProperty("response", "Số mẫu kí hiệu hoá đơn không chính xác " + rowIndex);
+                            .addProperty("response", "Số mẫu kí hiệu hoá đơn không chính xác tại dòng số" + rowIndex);
                     System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
                     return false;
                 }
