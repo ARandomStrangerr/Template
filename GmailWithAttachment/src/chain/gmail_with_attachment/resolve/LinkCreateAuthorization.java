@@ -28,11 +28,15 @@ public class LinkCreateAuthorization extends Link<ResolveChain> {
         JsonArray toArr;
 
         toArr = new JsonArray();
-        toArr.add("");
+        toArr.add("IncomingConnection");
 
         headerObj = new JsonObject();
         headerObj.addProperty("from", GmailWithAttachment.getInstance().moduleName);
         headerObj.addProperty("instance", GmailWithAttachment.getInstance().moduleId);
+        headerObj.add("to", toArr);
+        headerObj.addProperty("status", true);
+        headerObj.addProperty("decrease", false);
+        headerObj.addProperty("terminate", false);
 
         bodyObj = new JsonObject();
         bodyObj.addProperty("address", authenticationAddress.toString());
