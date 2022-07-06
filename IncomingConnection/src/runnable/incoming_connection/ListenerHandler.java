@@ -101,7 +101,7 @@ public class ListenerHandler extends runnable.ListenerHandler {
                 try {
                     IncomingConnection.getInstance().getListener().putSocket(socket.getName(), socket);
                 } catch (IllegalArgumentException e){
-                    System.err.printf("socket under the name %s is already connected to the net work, probably is under another job");
+                    System.err.printf("socket under the name %s is already connected to the net work, probably is under another job", socket.getName());
                     e.printStackTrace();
                     try{
                         socket.write("{\"error\":\"hiện tại phần mềm đang sử lí một công việc khác, vui lòng đợi\"}");
