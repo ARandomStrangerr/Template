@@ -1,6 +1,7 @@
 package chain.incoming_connection.init;
 
 import chain.Link;
+import chain.PausedLinkTable;
 import memorable.IncomingConnection;
 
 import java.util.Hashtable;
@@ -19,7 +20,7 @@ class LinkSetVariables extends Link<InitChain> {
     @Override
     protected boolean resolve() {
         IncomingConnection.getInstance().setName(chain.moduleName);
-        IncomingConnection.getInstance().setThreadTable(new Hashtable<>());
+        IncomingConnection.getInstance().setTable(new PausedLinkTable());
         return true;
     }
 }

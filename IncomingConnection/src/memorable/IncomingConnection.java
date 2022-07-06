@@ -1,6 +1,6 @@
 package memorable;
 
-import chain.LinkWait;
+import chain.PausedLinkTable;
 import socket.Listener;
 import socket.Socket;
 
@@ -18,7 +18,7 @@ public class IncomingConnection {
     private Socket socket;
     private int id;
     private String name;
-    private Hashtable<Integer, LinkWait> threadTable;
+    private PausedLinkTable table;
 
     private IncomingConnection() {
     }
@@ -55,11 +55,11 @@ public class IncomingConnection {
         this.name = name;
     }
 
-    public Hashtable<Integer, LinkWait> getThreadTable() {
-        return threadTable;
+    public PausedLinkTable getTable() {
+        return table;
     }
 
-    public void setThreadTable(Hashtable<Integer, LinkWait> threadTable) {
-        this.threadTable = threadTable;
+    public void setTable(PausedLinkTable table) {
+        this.table = table;
     }
 }

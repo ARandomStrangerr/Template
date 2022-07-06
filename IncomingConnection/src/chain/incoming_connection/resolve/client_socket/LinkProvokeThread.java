@@ -23,10 +23,9 @@ class LinkProvokeThread extends Link<ResolveChain> {
     protected boolean resolve() {
         JsonObject header = chain.getProcessObject().get("header").getAsJsonObject();
         if (header.has("thread")) {
-            int threadId = header.get("thread").getAsInt();
             try {
-                IncomingConnection.getInstance().getThreadTable().get(threadId).notifySync(chain.getProcessObject());
-            } catch (InterruptedException e) {
+                IncomingConnection.getInstance().getTable().resume(chain.getProcessObject());
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 return false;
             }

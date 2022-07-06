@@ -1,6 +1,7 @@
 package chain.incoming_connection.resolve.listener;
 
 import chain.LinkWait;
+import chain.PausedLinkStorage;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
@@ -12,8 +13,8 @@ import java.util.Hashtable;
  * get access list of module for the client send the request
  */
 class LinkGetPrivilege extends LinkWait<ResolveChain> {
-    LinkGetPrivilege(ResolveChain chain, Hashtable<Integer, LinkWait> threadTable) {
-        super(chain, threadTable);
+    LinkGetPrivilege(ResolveChain chain, PausedLinkStorage storage) {
+        super(chain, storage);
     }
 
     /**
@@ -32,7 +33,7 @@ class LinkGetPrivilege extends LinkWait<ResolveChain> {
         header = new JsonObject();
         header.addProperty("from", IncomingConnection.getInstance().getName());
         header.addProperty("instance", IncomingConnection.getInstance().getId());
-        header.addProperty("thread", Thread.currentThread().hashCode());
+        header.addProperty("thread", this.hashCode());
         header.add("to", toArray);
         header.addProperty("status", true);
         header.addProperty("decrease", false);
