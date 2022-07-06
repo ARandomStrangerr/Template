@@ -82,7 +82,7 @@ public abstract class ClientSocketHandler implements Runnable {
             // start a runnable for each request
             new Thread(resolveRequestRunnable).start();
         }
-        //after the loop, just closse the socket.
+        //after the loop, just close the socket.
         try {
             socket.close();
         }catch (IOException e){
