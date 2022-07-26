@@ -31,6 +31,10 @@ public class Listener {
         }
     }
 
+    public Listener(
+        KeyStore
+    )
+
     //todo include ssl socket
 
     /**

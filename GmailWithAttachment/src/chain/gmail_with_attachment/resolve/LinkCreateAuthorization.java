@@ -22,7 +22,7 @@ public class LinkCreateAuthorization extends Link<ResolveChain> {
         authenticationAddress.append("https://accounts.google.com/o/oauth2/v2/auth?")
                 .append(String.format("client_id=%s", GmailWithAttachment.getInstance().clientId))
                 .append(String.format("scope=%s", "https://www.googleapis.com/auth/gmail.compose"))
-                .append(String.format("redirect_uri=%s"));
+                .append(String.format("redirect_uri=%s:%d"));
 
         JsonObject sendObj, headerObj, bodyObj;
         JsonArray toArr;

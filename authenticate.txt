@@ -1,1 +1,5 @@
-f0:18:98:7b:72:f2=ViettelInvoiceGet,ViettelInvoiceSend
+04:42:1a:24:67:33=ViettelInvoiceSend,ViettelInvoiceGet
+fc:34:97:c2:5a:2a=ViettelInvoiceSend,ViettelInvoiceGet
+54:be:f7:0b:d3:11=ViettelInvoiceSend,ViettelInvoiceGet
+fc:34:97:c2:5a:2a=ViettelInvoiceSend,ViettelInvoiceGet
+b8:97:5a:e1:bf:92=ViettelInvoiceSend,ViettelInvoiceGet

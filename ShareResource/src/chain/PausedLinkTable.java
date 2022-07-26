@@ -4,6 +4,9 @@ import com.google.gson.JsonObject;
 
 import java.util.Hashtable;
 
+/**
+ * store paused link storage in a hash table.
+ */
 public class PausedLinkTable implements PausedLinkStorage {
     private final Hashtable<Integer, LinkWait> storage;
 

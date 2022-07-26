@@ -27,6 +27,11 @@ class LinkCheckPrivilege extends Link<ResolveChain> {
         JsonObject body = chain.getProcessObject().get("body").getAsJsonObject();
         String clientName = body.get("clientId").getAsString();
         JsonArray requestModules = body.get("requestModule").getAsJsonArray();
+        try{
+            Thread.sleep(10000);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         try {
             HashSet<String> privilegeSet = FakeAuthentication.getInstance().getPrivilegeTable().get(clientName);
             for (JsonElement module : requestModules) {

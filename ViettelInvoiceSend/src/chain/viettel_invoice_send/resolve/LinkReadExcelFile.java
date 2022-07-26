@@ -116,9 +116,10 @@ class LinkReadExcelFile extends Link<ResolveChain> {
                     System.err.println(ViettelInvoiceSend.getInstance().getName() + " invalid invoice type at index " + rowIndex);
                     return false;
                 }
-                tempStr = String.format("%s/%03d",
+                tempStr = String.format("%s0/%03d",
                         generalInvoiceObj.get("invoiceType").getAsString(),
                         tempInt);
+//                System.out.println(tempStr);
                 generalInvoiceObj.addProperty("templateCode",
                         tempStr);
                 //issue date
