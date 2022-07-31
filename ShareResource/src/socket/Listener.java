@@ -1,7 +1,11 @@
 package socket;
 
+import javax.net.ssl.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.security.*;
+import java.security.cert.CertificateException;
 
 public class Listener {
     private final ServerSocket listener;
@@ -31,9 +35,57 @@ public class Listener {
         }
     }
 
+    /**
+     * create a ssl socket
+     *
+     * @param keyStoreFile
+     * @param keyStoreFilePassword
+     * @param port
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws UnrecoverableKeyException
+     * @throws KeyManagementException
+     */
     public Listener(
-        KeyStore
-    )
+            String keyStoreFile,
+            String keyStoreFilePassword,
+            int port,
+            StorageType storageType
+    ) throws KeyStoreException,
+            IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
+        KeyStore keyStore;
+        keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(new FileInputStream(keyStoreFile), keyStoreFilePassword.toCharArray());
+
+        KeyManagerFactory keyManagerFactory;
+        keyManagerFactory = KeyManagerFactory.getInstance("X509");
+        keyManagerFactory.init(keyStore, keyStoreFilePassword.toCharArray());
+
+        TrustManagerFactory trustManagerFactory;
+        trustManagerFactory = TrustManagerFactory.getInstance("X509");
+        trustManagerFactory.init(keyStore);
+
+        SSLContext sslContext;
+        sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
+
+        SSLServerSocketFactory sslServerSocketFactory;
+        sslServerSocketFactory = sslContext.getServerSocketFactory();
+        this.listener = sslServerSocketFactory.createServerSocket(port);
+
+        switch (storageType){
+            case ONE_TO_ONE:
+                storage = new OneToManyStorage();
+                break;
+            case ONE_TO_MANY:
+                storage = new OneToManyStorage();
+                break;
+            default:
+                throw new IllegalArgumentException("Not a valid option for storage");
+        }
+    }
 
     //todo include ssl socket
 
@@ -54,12 +106,12 @@ public class Listener {
      */
     public void close() throws IOException {
         listener.close();
-        for (Socket socket : storage){
+        for (Socket socket : storage) {
             socket.close();
         }
     }
 
-    public void putSocket(String key, Socket socket) throws IllegalArgumentException{
+    public void putSocket(String key, Socket socket) throws IllegalArgumentException {
         this.storage.add(key, socket);
     }
 
@@ -75,7 +127,7 @@ public class Listener {
         }
     }
 
-    public Socket removeSocket(Socket socket){
+    public Socket removeSocket(Socket socket) {
         return storage.remove(socket);
     }
 }
