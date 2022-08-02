@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import memorable.IncomingConnection;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 /**
  * get access list of module for the client send the request
