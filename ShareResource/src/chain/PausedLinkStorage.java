@@ -2,8 +2,8 @@ package chain;
 
 import com.google.gson.JsonObject;
 
-public interface PausedLinkStorage {
-    void pause(LinkWait link) throws InterruptedException;
-    void resume(JsonObject additionalInfo)  throws NullPointerException, IllegalAccessException;
-    void resume() throws IllegalAccessException;
+public abstract class PausedLinkStorage {
+    abstract void pause(LinkWait link) throws InterruptedException;
+    public abstract void resume(JsonObject additionalInfo)  throws NullPointerException, IllegalAccessException;
+    public abstract void resume() throws IllegalAccessException;
 }

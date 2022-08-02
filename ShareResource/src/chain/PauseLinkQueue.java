@@ -8,14 +8,14 @@ import java.util.LinkedList;
  * store {@link LinkWait} in a linked list and queue it.
  *
  */
-public class PauseLinkQueue implements PausedLinkStorage{
+public class PauseLinkQueue extends PausedLinkStorage{
     private final LinkedList<LinkWait> storage;
     public PauseLinkQueue(){
         storage = new LinkedList<>();
     }
 
     @Override
-    public void pause(LinkWait link) throws InterruptedException {
+    void pause(LinkWait link) throws InterruptedException {
         storage.addFirst(link);
         synchronized (link){
             link.wait();
@@ -33,5 +33,9 @@ public class PauseLinkQueue implements PausedLinkStorage{
         synchronized (link) {
             link.notify();
         }
+    }
+
+    public boolean isEmpty() {
+        return storage.isEmpty();
     }
 }
