@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 public abstract class Link<T extends Chain> {
     protected final T chain;
+    protected JsonObject additionalInfo;
 
     public Link(T chain) {
         this.chain = chain;
@@ -16,4 +17,8 @@ public abstract class Link<T extends Chain> {
      * <code>false</code> when unsuccessfully run this block code
      */
     protected abstract boolean resolve();
+
+    public void setAdditionalInfo(JsonObject additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
 }

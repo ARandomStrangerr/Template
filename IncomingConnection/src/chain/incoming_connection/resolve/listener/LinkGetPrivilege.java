@@ -1,6 +1,6 @@
 package chain.incoming_connection.resolve.listener;
 
-import chain.LinkWait;
+import chain.Link;
 import chain.PausedLinkStorage;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,9 +11,9 @@ import java.io.IOException;
 /**
  * get access list of module for the client send the request
  */
-class LinkGetPrivilege extends LinkWait<ResolveChain> {
+class LinkGetPrivilege extends Link<ResolveChain> {
     LinkGetPrivilege(ResolveChain chain, PausedLinkStorage storage) {
-        super(chain, storage);
+        super(chain);
     }
 
     /**
@@ -51,12 +51,12 @@ class LinkGetPrivilege extends LinkWait<ResolveChain> {
         }
         // pause this thread
         try {
-            waitSync();
+            IncomingConnection.getInstance().getTable().pause(this);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
-        if(!this.getAdditionalInfo().get("header").getAsJsonObject().get("status").getAsBoolean()){
+        if(!this.additionalInfo.get("header").getAsJsonObject().get("status").getAsBoolean()){
             chain.getProcessObject().get("header").getAsJsonObject().addProperty("status", false);
             chain.getProcessObject().get("header").getAsJsonObject().addProperty("terminate", true);
             chain.getProcessObject().addProperty("error", "Người dùng không được uỷ quyền để sử dụng phần mềm");

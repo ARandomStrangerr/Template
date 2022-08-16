@@ -5,19 +5,19 @@ import com.google.gson.JsonObject;
 import java.util.LinkedList;
 
 /**
- * store {@link LinkWait} in a linked list and queue it.
+ * store {@link Link} in a linked list and queue it.
  *
  */
 public class PauseLinkQueue extends PausedLinkStorage{
-    private final LinkedList<LinkWait> storage;
+    private final LinkedList<Link> storage;
     public PauseLinkQueue(){
         storage = new LinkedList<>();
     }
 
     @Override
-    void pause(LinkWait link) throws InterruptedException {
-        storage.addFirst(link);
+    public void pause(Link link) throws InterruptedException {
         synchronized (link){
+            storage.addFirst(link);
             link.wait();
         }
     }
@@ -29,8 +29,8 @@ public class PauseLinkQueue extends PausedLinkStorage{
 
     @Override
     public void resume() throws IllegalAccessException {
-        LinkWait link = storage.removeLast();
-        synchronized (link) {
+        synchronized (storage) {
+            Link link = storage.removeLast();
             link.notify();
         }
     }
