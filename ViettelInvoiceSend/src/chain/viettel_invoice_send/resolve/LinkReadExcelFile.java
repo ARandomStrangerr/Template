@@ -39,11 +39,14 @@ class LinkReadExcelFile extends Link<ResolveChain> {
             for (int i = 0; i <= sheet.getLastRowNum(); ++i) {
                 Row row = sheet.getRow(i);
                 List<String> cells = new LinkedList<>();
+                boolean isAllNotNull = false;
                 for (int j = 0; j <= row.getLastCellNum(); ++j) {
                     Cell cell = row.getCell(j);
-                    cells.add(dataFormatter.formatCellValue(cell));
+                    String cellValString = dataFormatter.formatCellValue(cell);
+                    if (cell != null) isAllNotNull = true;
+                    cells.add(cellValString);
                 }
-                rawInvoiceList.add(cells);
+                if (isAllNotNull) rawInvoiceList.add(cells);
             }
             workbook.close();
         } catch (IOException e) {
